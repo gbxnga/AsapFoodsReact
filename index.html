@@ -1,0 +1,85 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#FF4C00" />
+    <link rel="icon" sizes="96x96" href="src/icons/logo 96.png">
+    <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet">
+    <!--<link href="https://fonts.googleapis.com/css?family=Indie+Flower|Karma|Nanum+Myeongjo|Raleway|Encode+Sans|Quicksand" rel="stylesheet">-->
+    <meta name="google-signin-client_id" content="26744737187-i1dcsafk0dmj31fs4021248tsnif8k7m.apps.googleusercontent.com">
+    <script>
+        document.onreadystatechange = function() {
+            var state = document.readyState
+            if (state == 'interactive') 
+            {
+                $('#main').hide();
+            }
+                
+            
+            else if (state == 'complete') {
+                if ('serviceWorker' in navigator) {
+                    window.addEventListener('load', () => {
+                        navigator.serviceWorker.register('sw.js').then(registration => {
+                            console.log('SW registered: ', registration);
+                        }).catch(registrationError => {
+                            console.log('SW registration failed: ', registrationError);
+                        });
+                    });
+                }
+                var url4 = "https://js.paystack.co/v1/inline.js";
+                $.getScript(url4, function() {
+                    console.log('PAYSTACK LOADED');
+                });
+
+                    
+                setTimeout(function() {
+                    document.getElementById('interactive');
+                    $('#load').hide();
+                    $('#main').show();
+                    $('.toastContainer').show()
+                }, 100);
+                
+            }
+        }
+    </script>
+
+
+    <title>ASAPFoods</title>
+</head>
+<body style="backgroun-size:contain">
+    	<noscript>
+                You need to enable JavaScript to run this app.
+            </noscript>
+    <div id="load" styl="background-color:transparent;opacity:0.4">
+        <div id="loading-image" class="loader">
+            <svg viewBox="0 0 32 32" width="32" height="32">
+            <circle id="spinner" cx="16" cy="16" r="14" fill="none"></circle>
+            </svg>
+        </div>
+    </div>
+    <style>
+            body{
+                font-family: 'Dosis', sans-serif !important;
+            }
+            h1,h2,h3,h4,h5,h6,p,div{
+                font-family: 'Dosis', sans-serif !important;
+            }
+            </style>
+    <div id="react-container">
+
+
+    </div>
+
+    <div class="text-center toast__container toastContainer invisible " style="display:none;border-left:5px solid #FF4C00;z-index:1000000000000000000000000000;font-size:16px;border-radius:3px;position:fixed;top:65px; padding:15px; left:-270px; height:55px; width:270px; color:black; background-color:white;box-shadow:rgba(0, 0, 0, 0.1) 0px 3px 10px, rgba(0, 0, 0, 0.1) 0px 3px 4px"
+    class="toast__container ">
+
+    </div>
+    <script type="text/javascript" src="bundle.js"></script>
+</body>
+</html>
