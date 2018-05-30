@@ -266,7 +266,7 @@ class CheckoutContainer extends React.Component
 
             theplates--;
         }
-        while(plates>0)
+        while(theplates>0)
         grand_total = sub_total + delivery_charge
         
         

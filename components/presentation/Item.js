@@ -51,16 +51,16 @@ class Item extends React.Component
     }
 
     render(){
-        const {item} = this.props
+        const {item, _incrementItem,qty, width} = this.props
         return (
             <div className={`item-parent-${item.category} col-xs-4 col-l-4 item-parent`} style={{padding:2.5}}>
-                <div className="inner-item-con has-shadow">
+                <div className="inner-item-con has-shadow" style={{border:`2px solid ${(width > 0) ? "#FF4C00":"white"}`}}>
                     <img src={`${constants.site}/src/images/${item.image}`} style={{width:"100%"}} height="70"/>
                     <div className="price">{item.food}<span style={{float:"right"}}>&#8358;{item.price}</span></div>
                     <div className="qty">
-                        <span onClick={this.decrease} className="glyphicon glyphicon-minus"></span>
-                        <span data-item-id={item.id} data-val="0" className="item-qty-val">0</span>
-                        <span onClick={this.increase} className="glyphicon glyphicon-plus"></span>
+                        <span onClick={()=>_incrementItem(item.id, "minus")} className="glyphicon glyphicon-minus"></span>
+                        <span data-item-id={item.id} data-val="0" className="item-qty-val">{qty}</span>
+                        <span onClick={()=>_incrementItem(item.id, "plus")} className="glyphicon glyphicon-plus"></span>
                     </div>
                 </div>
             </div>

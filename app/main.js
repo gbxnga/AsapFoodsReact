@@ -19,7 +19,7 @@ import toast from '../modules/toast'
 
 import  '../modules/offline'
 import 'font-awesome/css/font-awesome.css';
-import styles from '../dist/src/css/main.css'
+import styles from '../src/css/main.css'
 //import styles2 from 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css'
 
 window.React = React
