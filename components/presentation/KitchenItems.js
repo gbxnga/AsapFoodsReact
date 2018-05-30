@@ -12,7 +12,7 @@ return (
 <div className="items-page page-container" style={{display:"block"}}>
 <div className="container">
     <div className="row" style={{marginLeft:0,marginRight:0}}>
-        <div id="kitchen-banner" style={{padding:0}} className="col-xs-12 col-lg-4 col-lg-offset-4">
+        <div id="kitchen-banner" style={{padding:0,borderRadius:10}} className="col-xs-12 col-lg-4 col-lg-offset-4">
 
             <KitchenBanner kitchen={kitchen}/>
 
@@ -21,7 +21,7 @@ return (
             <div className="row">
                 <div className="center-block col-md-12">
 
-                    <input autoComplete="off" style={{fontSize:16,borderRadius:"none"}} id="search-item-input" className="center-block col-md-12" placeholder="Search through items.." type="text" 
+                    <input autoComplete="off" style={{fontSize:16,borderRadius:20}} id="search-item-input" className="center-block col-md-12" placeholder="Search through items.." type="text" 
                     ref={input => _searchTerm = input} 
                     onKeyUp={updateSearch
                     //onKeyUp={()=>filter('#items-div-con')
