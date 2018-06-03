@@ -34,6 +34,8 @@ const constants = {
     GET_PLATES_API: `${url}/api/checkout/plates`,
     DELETE_PLATE_API: `${url}/api/plate`,
     GET_ORDERS_API: `${url}/api/user/orders`,
-    GET_ORDER_API:`${url}/api/user/order`
+    GET_ORDER_API:`${url}/api/user/order`,
+    VALIDATE_PHONE_NUMBER_API:`${url}/api/user/send-validation-code`,
+    VALIDATE_SENT_CODE_API:`${url}/api/user/verify-sent-code`,
 }
 export default constants
