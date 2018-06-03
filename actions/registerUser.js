@@ -2,6 +2,9 @@ import C from '../constants/constants'
 import toast from '../modules/toast'
 import axios from "axios";
 const registerUser = (id=0,username, password, name, email, phone,address,type,dispatch) =>{
+
+    $('#register-form button').attr("disabled", "disabled").html('<i class="fa fa-spinner fa-spin fa-1x fa-fw"></i><span class="sr-only">Loading...</span>');
+
     var formData = new FormData();
     formData.append("type", type);
     formData.append("username", username);
@@ -43,10 +46,12 @@ const registerUser = (id=0,username, password, name, email, phone,address,type,d
             })
             toast(`${(json.data.data.auth_type == "email")?"Registration":"Login"} Failed!`)
         }
+        $("#register-form button").removeAttr("disabled").html('Register');
       })
       .catch((error) => {
         toast('An Error Occured!')
-          console.log(`${formData} ${error}`)
+        console.log(`${formData} ${error}`)
+        $("#register-form button").removeAttr("disabled").html('Register');
       });
 
 }
