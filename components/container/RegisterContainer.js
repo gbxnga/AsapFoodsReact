@@ -52,14 +52,19 @@ class RegisterContainer extends Component {
                     this.setState({
                         isValidatingPhoneNumber: true
                     })
+                    $("#register-form button").removeAttr("disabled").html('Complete Registration');
+                    
                 }
                 else{
                     toast(`Couldn't send code to ${phone}`)
+                    $("#register-form button").removeAttr("disabled").html('Register');
                 }
+                
             })
             .catch((error) => {
                 //return false
                 toast('An Error Occured! Please try again')
+                $("#register-form button").removeAttr("disabled").html('Register');
                 console.log(`${formData} ${error}`)
             });
     }
@@ -67,6 +72,8 @@ class RegisterContainer extends Component {
     _validateSentCode(e) {
 
         e.preventDefault()
+        $('#register-form button').attr("disabled", "disabled").html('<i class="fa fa-spinner fa-spin fa-1x fa-fw"></i><span class="sr-only">Loading...</span>');
+
 
         const {name, password, email, phone, validationCode} = this.state
 
@@ -86,13 +93,15 @@ class RegisterContainer extends Component {
                     this.props.registerUser(0,name, password,name, email, phone,"","email")
                 }
                 else{
-                    toast(`Couldn't validate code to ${phone}`)
+                    toast(`Couldn't validate code`)
                 }
+                $("#register-form button").removeAttr("disabled").html('Complete Registration');
             })
             .catch((error) => {
                 //return false
                 toast('An Error Occured! Please try again')
                 console.log(`${formData} ${error}`)
+                $("#register-form button").removeAttr("disabled").html('Complete Registration');
             });
 
 
@@ -100,6 +109,7 @@ class RegisterContainer extends Component {
     }
     _registerUser(e) {
         e.preventDefault()
+        $('#register-form button').attr("disabled", "disabled").html('<i class="fa fa-spinner fa-spin fa-1x fa-fw"></i><span class="sr-only">Loading...</span>');
         const {
             name,
             password,
@@ -107,7 +117,10 @@ class RegisterContainer extends Component {
             phone
         } = this.state
 
-        if (!this._validateParameters(name, password, email, phone)) return;
+        if (!this._validateParameters(name, password, email, phone)) {
+            $("#register-form button").removeAttr("disabled").html('Register');
+            return
+        };
 
         //this.setState({loading:true})
         this._sendValidationCode(phone, name)
@@ -207,9 +220,9 @@ class RegisterContainer extends Component {
     
             <form id="register-form" onSubmit={e => this._validateSentCode(e)} action=" " method="post " style={{marginTop:"-35px"}}>
                 <p style={{display:"none", width:"90%"}} className="alert alert-warning center-block text-center warning"></p>
-                <p style={{display:"none", width:"90%"}} className="alert alert-info center-block text-center warning">Enter the 4 digit code sent to <strong>{phone}</strong></p>
-                <input onChange={this._handleChange.bind(this, 'validationCode')} style={{backgroundColor:"white",border:"1px solid #cccccc"}} defaultValue={validationCode} autoComplete="off" id="username-input" name="code" type="text" className="center-block" placeholder="Validation Code " />
-                <button type="submit" className="landing-page-btn center-block text-center" id="email-login-btn" style={{width:"80%",border:"none",height:44,boxShadow: "0px 8px 15px rgba(0, 0, 0, 0.1)"}} href="#facebook ">Validate Number</button>
+                <p style={{display:"block", width:"90%"}} className="alert alert-info center-block text-center warning">Enter the 5 digit code sent to <strong>{phone}</strong></p>
+                <input onChange={this._handleChange.bind(this, 'validationCode')} style={{backgroundColor:"white",border:"1px solid #cccccc"}} defaultValue={validationCode} autoComplete="off" id="code-input" name="code" type="number" className="center-block" placeholder="Validation Code " />
+                <button type="submit" className="landing-page-btn center-block text-center" id="email-login-btn" style={{width:"80%",border:"none",height:44,boxShadow: "0px 8px 15px rgba(0, 0, 0, 0.1)"}} href="#facebook ">Complete Registration</button>
             </form>
             <p><Link id="dont-have-account-btn " style={{color:"#333333"}} className="text-center center-block" to="login"><span style={{fontSize:13,marginRight:5}} className="glyphicon glyphicon-arrow-left"></span>Back to homepage</Link></p>
     
