@@ -179,7 +179,7 @@ class PushComponent extends Component {
         formData.append("token", user.details.auth_token);
         formData.append("object", JSON.stringify(subscription));
 
-        axios.post(`https://asapfoods.com.ng/api/push/save-subscription?token=${user.details.auth_token}`, formData)
+        axios.post(`https://api.asapfoods.com.ng/api/push/save-subscription?token=${user.details.auth_token}`, formData)
         .then(response => {
           console.log(response)
           return response
