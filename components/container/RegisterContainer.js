@@ -21,13 +21,13 @@ class RegisterContainer extends Component {
             password: '',
             email: '',
             phone: '',
-
+            validationCode:'',
             isValidatingPhoneNumber: false,
-            validationCode: '',
             warning: '',
             loading: false
 
         }
+        this.textInput = React.createRef();
         this._registerUser = this._registerUser.bind(this)
         this._validateParameters = this._validateParameters.bind(this)
         this._sendValidationCode = this._sendValidationCode.bind(this)
@@ -35,6 +35,7 @@ class RegisterContainer extends Component {
 
 
     }
+    
     _sendValidationCode(phone, name) {
 
         let formData = new FormData();
@@ -76,6 +77,7 @@ class RegisterContainer extends Component {
 
 
         const {name, password, email, phone, validationCode} = this.state
+        //const validationCode = this.textInput 
 
         let formData = new FormData();
 
@@ -207,7 +209,10 @@ class RegisterContainer extends Component {
                 <Register registerUser={registerUser}/>
             
         )*/
-        const {name, password, phone, email, isValidatingPhoneNumber, validationCode} = this.state
+        //let _code;
+        const {name, password, phone, email, isValidatingPhoneNumber, validationCode, warning} = this.state
+        
+       
         console.log(JSON.stringify(this.state))
         return(
             (isValidatingPhoneNumber) ?
@@ -221,7 +226,9 @@ class RegisterContainer extends Component {
             <form id="register-form" onSubmit={e => this._validateSentCode(e)} action=" " method="post " style={{marginTop:"-35px"}}>
                 <p style={{display:"none", width:"90%"}} className="alert alert-warning center-block text-center warning"></p>
                 <p style={{display:"block", width:"90%"}} className="alert alert-info center-block text-center warning">Enter the 5 digit code sent to <strong>{phone}</strong></p>
-                <input onChange={this._handleChange.bind(this, 'validationCode')} style={{backgroundColor:"white",border:"1px solid #cccccc"}} defaultValue={validationCode} autoComplete="off" id="code-input" name="code" type="number" className="center-block" placeholder="Validation Code " />
+
+                <input style={{backgroundColor:"white",border:"1px solid #cccccc",display:"none"}} id="code-input" name="codee"  type="text" className="center-block" placeholder="Validation Code " />
+                <input onChange={this._handleChange.bind(this, 'validationCode')} value={validationCode} style={{backgroundColor:"white",border:"1px solid #cccccc"}} id="code-input" name="code" type="text" className="center-block" placeholder="Validation Code " />
                 <button type="submit" className="landing-page-btn center-block text-center" id="email-login-btn" style={{width:"80%",border:"none",height:44,boxShadow: "0px 8px 15px rgba(0, 0, 0, 0.1)"}} href="#facebook ">Complete Registration</button>
             </form>
             <p><Link id="dont-have-account-btn " style={{color:"#333333"}} className="text-center center-block" to="login"><span style={{fontSize:13,marginRight:5}} className="glyphicon glyphicon-arrow-left"></span>Back to homepage</Link></p>
@@ -235,7 +242,7 @@ class RegisterContainer extends Component {
             </div>
     
             <form id="register-form" onSubmit={e => this._registerUser(e)} action=" " method="post " style={{marginTop:"-35px"}}>
-                <p style={{display:"none", width:"90%"}} className="alert alert-warning center-block text-center warning"></p>
+                <p style={{display:"none", width:"90%"}} className="alert alert-warning center-block text-center warning">{warning}</p>
                 <input onChange={this._handleChange.bind(this, 'name')} style={{backgroundColor:"white",border:"1px solid #cccccc"}} defaultValue={name} autoComplete="off" id="username-input" name="username" type="text" className="center-block" placeholder="Fullname " />
                 <input onChange={this._handleChange.bind(this, 'phone')}  defaultValue={phone} style={{backgroundColor:"white",border:"1px solid #cccccc"}} autoComplete="off" id="phone-input" name="phone" type="number" className="center-block" placeholder="Phone number " />
                 <input onChange={this._handleChange.bind(this, 'email')} defaultValue={email} style={{backgroundColor:"white",border:"1px solid #cccccc"}} autoComplete="off" id="email-input-2" name="email" type="email" className="center-block" placeholder="email " />

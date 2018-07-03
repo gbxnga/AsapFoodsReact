@@ -44,7 +44,8 @@ const registerUser = (id=0,username, password, name, email, phone,address,type,d
             dispatch({
                 type: C.REGISTER_USER_FAILED
             })
-            toast(`${(json.data.data.auth_type == "email")?"Registration":"Login"} Failed!`)
+            //toast(`${(json.data.data.auth_type == "email")?"Registration":"Login"} Failed!`)
+            toast(`${json.data.data}`)
         }
         $("#register-form button").removeAttr("disabled").html('Register');
       })
