@@ -8,12 +8,19 @@ import KitchenItems from '../presentation/KitchenItems'
 import toast from '../../modules/toast'
 import axios from "axios";
 import C from '../../constants/constants'
+import ErrorPage from '../presentation/ErrorPage'
+
+const KEYS_TO_FILTERS = ['name'];
+
 
 class ItemsContainer extends React.Component
 {
     constructor(props)
     {
         super(props)
+
+        const { params } = this.props.match
+
         this.state = {
             kitchens: {},
             items: [],
@@ -21,8 +28,14 @@ class ItemsContainer extends React.Component
             selectedItems:[],
             kitchen:{},
             searchTerm: '',
-            category:'All'
-        }        
+            category:'All',
+            kitchenId: params ? params.id : null,
+            kitchenName: params ? params.name : null,
+        } 
+        this._searchUpdated = this._searchUpdated.bind(this)  
+        this._incrementItem = this._incrementItem.bind(this)  
+        this._createPlate = this._createPlate.bind(this)   
+        this._filterItemsBy = this._filterItemsBy.bind(this)
     }
     componentWillMount()
     {
@@ -48,49 +61,21 @@ class ItemsContainer extends React.Component
             }
             else
             {
+                this.setState({kitchens:[],loading:false, kitchenName:this.props.match.params.name})
+                
                 console.log('kitchens empty')
-                this.state.kitchens = []                
+                //this.state.kitchens = []                
             }
           })
           .catch((error) => {
               console.log(` ${error}`)
           });
     }
-    filter(what) {
-        var value = $('#search-item-input').val();
-        //$(what+' .item-parent').hide();
-    
-        value = value.toLowerCase().replace(/\b[a-z]/g, function(letter) {
-            return letter.toUpperCase();
-        });
-    
-        if (value == '') {
-            $(what + ' .item-parent').show();
-        } else {
-            $(what + ' .item-parent:not(:contains(' + value + '))').hide();
-            $(what + ' .item-parent:contains(' + value + ')').show();
-        }
-    }
-    filterItem(itemClass)
-    {
-        let numOf_Items = $('.item-parent').length;
-        $(".category-btn:first-child").html('All ('+numOf_Items+')');
-        
-            $(".category-btn").removeClass('present-btn').addClass('old-btn');
-            $(this).removeClass('old-btn').addClass('present-btn');
-            
-            if (itemClass == 'all')
-            {
-                $(".item-parent").show();
-                return;
-            }
-            $(".item-parent").hide();
-            $(".item-parent-"+itemClass).show();
-            if ($(".item-parent-"+itemClass).length < 1)
-                toast('No Item in category');
 
-        
+    _filterItemsBy(value){
+         this.setState({category:value})
     }
+
     _incrementItem(id, type = "plus") {
 
         let isUpdate = false;
@@ -101,10 +86,14 @@ class ItemsContainer extends React.Component
         let newState = []
 
         newState = initialState.map(myObj => {
-            if (myObj.id == id) {
+
+            // filter the item to be increases/decreased from selectedItems 
+            if (myObj.id == id && myObj.quantity != 0) {
+
+                // if object is found, it means is an update of its quantity
                 isUpdate = true;
 
-                myObj.quantity = (type == "plus") ? myObj.quantity + 1 : myObj.quantity - 1
+                myObj.quantity = (type === "plus") ? myObj.quantity + 1 : myObj.quantity - 1
             }
             return myObj
         })
@@ -112,13 +101,14 @@ class ItemsContainer extends React.Component
             if (object.quantity > 0) return true;
         });
 
-        if (!isUpdate) {
+        if (!isUpdate && type == "plus") {
             let item = {
                 id: id,
                 quantity: 1
             }
             initialState.push(item)
-        }
+        } else if (type == "minus") console.log('its minus, ot updating!!')
+        console.log(filteredNewState)
         this.setState({
             selectedItems: (isUpdate) ? filteredNewState : initialState
         })
@@ -128,10 +118,46 @@ class ItemsContainer extends React.Component
 
         //alert(JSON.stringify(this.state.selectedItems))
     }
-    _searchUpdated(term) {
+    _searchUpdated(term = "") {
         this.setState({
             searchTerm: term
         })
+    }
+    _createPlate() {
+        //this.setState({loading: true})
+        $('#create-plate-form button').attr("disabled", "disabled").html('<i class="fa fa-spinner fa-spin fa-1x fa-fw"></i><span class="sr-only">Loading...</span>');
+        let formData = new FormData();
+        const { user } = this.context.store.getState()
+
+        formData.append("token", user.details.auth_token);
+        formData.append("kitchen_id", this.state.kitchenId)
+        //formData.append("kitchen_id", 4)
+
+        //let array = $('#create-plate-form').serializeArray()
+
+        this.state.selectedItems.map((item) => {console.log(item);formData.append(item.id, item.quantity)})
+
+        console.log(this.state.selectedItems)
+        console.log(user)
+
+        axios.post(`${C.CREATE_PLATE_API}?token=${user.details.auth_token}`, formData)
+            .then(response => {
+                console.log(response)
+                return response
+            })
+            .then(json => {
+                if (json.data.success) {
+                    toast('Items added!')
+                    this.props.history.push('../../checkout')
+                } else {
+                    toast('Failed to add items')
+                }
+                $("#create-plate-form button").removeAttr("disabled").html('<span class="glyphicon glyphicon-plus"></span> Add Items to Plate');
+            })
+            .catch((error) => {
+                console.log(` ${error}`)
+                $("#create-plate-form button").removeAttr("disabled").html('<span class="glyphicon glyphicon-plus"></span> Add Items to Plate');
+            });
     }
     
     componentDidMount()
@@ -140,8 +166,24 @@ class ItemsContainer extends React.Component
         $('header #right').attr('data-content', `${plates.length}`);
     }
     render(){
-        const {kitchen, items, loading} = this.state
+        const {kitchen, items, loading, searchTerm, category, selectedItems, kitchens} = this.state
         const {openNav, closeNav, createPlate} = this.context
+
+        if (kitchens === undefined || kitchens.length == 0) {
+            // array empty or does not exist
+
+            return (
+                <div>
+                <NavComponent closeNav={closeNav}/>
+                <Header title="Add Items" openNav={openNav}/>
+                <ErrorPage message="Sorry! No Item in Kitchen"/>
+                </div>
+            )
+        }
+        const filteredItems = this.state.items.filter(item => {
+           
+            if (item.food.toLowerCase().includes(searchTerm.toLowerCase()) && (category == 'All' || category.toLowerCase() == item.category.toLowerCase())) return true
+        })
         return(
             
 
@@ -153,14 +195,24 @@ class ItemsContainer extends React.Component
             <Header showBack={true}  title='Add Items' openNav={openNav}/>
             {(loading) ? 
             <div id="load" style={{backgroundColor:"transparent",opacity:0.9}}>
-                <div id="loading-image" class="loader">
-                    <svg viewBox="0 0 32 32" width="32" height="32">
-                    <circle style={{color:"#FF4C00"}} id="spinner" cx="16" cy="16" r="14" fill="none"></circle>
-                    </svg>
-                </div>
+                    <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+                
             </div>
             :
-            (items.length == 0) ? "No items here" : <KitchenItems filterItem={this.filterItem} filter={this.filter} createPlate={createPlate} kitchen={kitchen} items={items}/>}
+            (items.length == 0) ?         
+            <ErrorPage message="Sorry! No Item"/> : <KitchenItems _createPlate={this._createPlate} 
+                                                                  _searchUpdated={this._searchUpdated} 
+                                                                  filterItem={this.filterItem} 
+                                                                  filter={this.filter} 
+                                                                  createPlate={createPlate} 
+                                                                  kitchen={kitchen} 
+                                                                  items={filteredItems}
+                                                                  _incrementItem={this._incrementItem}
+                                                                  selectedItems={selectedItems}
+                                                                  _filterItemsBy={this._filterItemsBy}
+                                                                  category={category}
+                                                    />
+            }
             
             </div>
         )

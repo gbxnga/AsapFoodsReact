@@ -108,13 +108,10 @@ class OrderContainer extends React.Component
                 {
 
                     (loading) ?
-                        <div id="load" style={{backgroundColor:"transparent",opacity:0.9}}>
-                            <div id="loading-image" class="loader">
-                                <svg viewBox="0 0 32 32" width="32" height="32">
-                                <circle style={{color:"#FF4C00"}} id="spinner" cx="16" cy="16" r="14" fill="none"></circle>
-                                </svg>
-                            </div>
-                        </div>
+                    <div id="load" style={{backgroundColor:"transparent",opacity:0.9}}>
+                    <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+                
+                    </div>
                     :
                     (this.props.match.path.endsWith('/view-order/:ref')) ? 
                         <Order order={order}/>

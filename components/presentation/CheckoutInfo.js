@@ -42,17 +42,19 @@ const CheckoutInfo = ({delivery_charge=0, grand_total=0, sub_total=0,user={}, pr
                     <input autoComplete="off"  ref={input => _name = input} defaultValue={`${user.details.name}`} id="checkout-names" style={{fontSize:14}} name="name" className="center-block" type="text" placeholder="Name" />
                     <input autoComplete="off"  ref={input => _phone = input} defaultValue={`${user.details.phone}`}  id="checkout-phone" style={{fontSize:14}} name="phone" className="center-block" type="text" placeholder="Phone Number" />
                     <textarea id="checkout-address"  ref={input => _address = input}  defaultValue={`${user.details.address}`}  placeholder="Address" name="address" className="center-block" style={{height:80, padding:10,width:"90%",fontSize:14, border:"none",borderBottom:"1px solid #cccccc"}}/>
-                    <input autoComplete="off"   style={{fontSize:14,marginLeft:20}} name="comment" className="center-block" type="text" placeholder="Additional Comment..." />
+                    
                     <select id="selectArea" onChange={_updateAreaCharge} name="area" style={{padding:  10,
     borderColor:"#FF4C00",
     borderWidth:1,
     margin:  15,
+    marginBottom:0,
     height:  50,
     width: "92%",
     float:  "left",color:"#666",backgroundColor:"white"
                     }}><option value="none">Select Area</option>
     <option value="southGate">South gate</option>
     <option value="northGate">North gate</option></select>
+    <input autoComplete="off"   style={{fontSize:14,marginLeft:20}} name="comment" className="center-block" type="text" placeholder="Additional Comment..." />
                     
                     <div className="col-md-12" style={{marginLeft: 5,paddingBottom: 15}}><input id="coupone" autoComplete="off" style={{fontSize:14,float: "left",width: "50%"}} name="discount" className="center-block" type="text" placeholder="Discount Code(if any).."/>
                             <button id="verify-coupone-btn" type="button" onClick={verifyCoupone} className="btn btn-sm" style={{

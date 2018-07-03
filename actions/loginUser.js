@@ -27,18 +27,18 @@ const loginUser = (email, password, dispatch) =>{
                 id : json.data.data.id,
                 email: json.data.data.email,
                 auth_token: json.data.data.auth_token,
-                auth_type: json.data.data.auth_type,
+                auth_type: json.data.data.oauth_provider,
                 orders:json.data.data.orders,
                 timestamp: new Date().toString()
             })
-            toast('Login Successful!')
+            toast(`${json.data.message}`)
         }
         else
         {
             dispatch({
                 type: C.LOGIN_USER_FAILED
             })
-            toast('Login Failed!')
+            toast(`${json.data.message}`)
         }
         $("#login-form button").removeAttr("disabled").html('Login');
       })
