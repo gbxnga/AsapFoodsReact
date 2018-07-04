@@ -226,6 +226,7 @@ class RegisterContainer extends Component {
             <form id="register-form" onSubmit={e => this._validateSentCode(e)} action=" " method="post " style={{marginTop:"-35px"}}>
                 <p style={{display:"none", width:"90%"}} className="alert alert-warning center-block text-center warning"></p>
                 <p style={{display:"block", width:"90%"}} className="alert alert-info center-block text-center warning">Enter the 5 digit code sent to <strong>{phone}</strong></p>
+                <p id="resend-code-btn" style={{display:"block", width:"35%",textAlign:"center",cursor: "pointer",padding: "7px 5px",marginBottom: "0px"}} onClick={()=>this._sendValidationCode(phone, name)} className="text-warning center-block"><strong>RESEND CODE</strong></p>
 
                 <input style={{backgroundColor:"white",border:"1px solid #cccccc",display:"none"}} id="code-input" name="codee"  type="text" className="center-block" placeholder="Validation Code " />
                 <input onChange={this._handleChange.bind(this, 'validationCode')} value={validationCode} style={{backgroundColor:"white",border:"1px solid #cccccc"}} id="code-input" name="code" type="text" className="center-block" placeholder="Validation Code " />
