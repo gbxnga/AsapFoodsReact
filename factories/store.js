@@ -5,7 +5,7 @@ import { createLogger } from 'redux-logger'
 import { routerMiddleware } from 'react-router-redux'
 import createHistory from 'history/createBrowserHistory';
 
-import {logger, saver, auth} from '../middlewares'
+import {logger, saver, auth, handlerMiddleware} from '../middlewares'
 
 import user from '../reducers/user'
 import cart from '../reducers/cart'
@@ -33,7 +33,7 @@ export const history = createHistory();
 // Build the middleware for intercepting and dispatching navigation actions
 const myRouterMiddleware = routerMiddleware(history);
 
-const getMiddleware = () =>  applyMiddleware(myRouterMiddleware, logger, saver, auth, createLogger())
+const getMiddleware = () =>  applyMiddleware(myRouterMiddleware, logger, saver, auth, createLogger(),handlerMiddleware)
 
 const state = localStorage['redux-storee'] ? JSON.parse(localStorage['redux-storee']) : defaultState ;
 

@@ -20,7 +20,7 @@ import styles from './src/css/main.css'
 window.React = React
 
 import loginUser from './actions/loginUser'
-import LoginContainer from './components/container/LoginContainer'
+import LoginContainer from './components/Login/'
 import HomeContainer from './components/container/HomeContainer'
 import KitchensContainer from './components/container/KitchensContainer'
 import ItemsContainer from './components/container/ItemsContainer'

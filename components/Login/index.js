@@ -18,6 +18,9 @@ class Login extends Component {
 
     constructor(){
         super()
+        this.state = {
+            loading: false 
+        }
         this.userInput = React.createRef();
         this.passwordInput = React.createRef();
 
@@ -45,6 +48,7 @@ class Login extends Component {
                toast("Password invalid!");
                return false;
            } else {
+               this.setState({loading:true})
                loginUser(email,pass) 
            }
            
@@ -52,6 +56,8 @@ class Login extends Component {
 
 
     render(){
+
+        const {loading} = this.state
 
         return(
             <div id="" style={{ marginTop: "10%",display:"block" }} className="login-with-page page-container col-md-12">           
@@ -63,13 +69,18 @@ class Login extends Component {
             <form id="login-form" action="" onSubmit={this.handleLogin} method="post">
                 <input ref={input => (this.userInput = input)}  style={{backgroundColor:"white",border:"1px solid #cccccc"}} autoComplete="off" id="email-input" name="email" type="text" className="center-block" placeholder="email" />
                 <input ref={input => (this.passwordInput = input) } style={{backgroundColor:"white",border:"1px solid #cccccc"}} autoComplete="off" id="password-input" name="password" type="password" className="center-block" placeholder="password" />
-                <button type="submit" style={{height:44,boxShadow: "0px 8px 15px rgba(0, 0, 0, 0.1)",border:"none"}} className="landing-page-btn center-block text-center" id="email-login-btn" href="#facebook">Login</button>
+                <button type="submit" disabled={loading} style={{height:44,boxShadow: "0px 8px 15px rgba(0, 0, 0, 0.1)",border:"none"}} className="landing-page-btn center-block text-center" id="email-login-btn" href="#facebook">
+                    
+                    { loading ? 
+                        <span> <i className="fa fa-spinner fa-spin fa-1x fa-fw"></i> Loading...</span>
+                        : 
+                        'Login'
+                    }
+                </button>
             </form>
             <div className="col-md-12">
                 <h1 style={{fontSize:14}}>OR</h1>
             </div>
-            
-
             <p><Link to="register" style={{marginTop:15}} id="dont-have-account-btn" className="text-center center-block" href="">Dont have an account?</Link></p>
 
         </div>

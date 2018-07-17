@@ -7,8 +7,12 @@ import {
 } from '../constants/api'
 import toast from '../modules/toast'
 import axios from "axios";
+
+import createHistory from 'history/createBrowserHistory';
+const history = createHistory();
+
 export default (email, password, dispatch) =>{
-    $('#login-form button').attr("disabled", "disabled").html('<i class="fa fa-spinner fa-spin fa-1x fa-fw"></i><span class="sr-only">Loading...</span>');
+    //$('#login-form button').attr("disabled", "disabled").html('<i class="fa fa-spinner fa-spin fa-1x fa-fw"></i><span class="sr-only">Loading...</span>');
 
         
     var formData = new FormData();
@@ -51,6 +55,7 @@ export default (email, password, dispatch) =>{
       })
       .catch((error) => {
         toast('An Error Occured!')
+        console.error(error)
           console.log(`${LOGIN_USER_API}/${email}/${password} ${error}`)
           $("#login-form button").removeAttr("disabled").html('Login');
       });

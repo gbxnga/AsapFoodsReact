@@ -1,12 +1,40 @@
+
+
+import browserHistory from 'react-router-dom';
+import { push } from 'redux-little-router'
+import createHandlerMiddleware from 'redux-handler-middleware';
+//import {FETCH_POST_FAILURE, FETCH_POSTS_FAILURE} from 'constants/blog';
+
+export const handlerMiddleware = createHandlerMiddleware([{
+    actions: ["LOGIN_USER_SUCCESSFUL"],
+    afterHandler: (store, action) => {
+        if(action.type == "LOGIN_USER_SUCCESSFUL"){
+            //browserHistory.replace({pathname: '/'})
+        }
+    }
+}]);
+
+
 export const auth = store => next => action => {
     let result
     let state
 
     state = store.getState();
     console.log(state)
+    
+    if (action.type == "LOGIN_USER_SUCCESSFUL") {
+        console.log('sending u to dashboad');
+        action = {
+            ...action, 
+            afterHandler: (action) => {
+                browserHistory.replace({pathname: '/'});
+            }
+        }
+    }
     if (action.type != "LOGIN_USER_SUCCESSFUL" && action.type != "LOGIN_USER_FAILED" && !state.user.isLoggedIn)
     {
-        console.log('You are logged out')
+        
+        console.log('You are logged outt')
     }
     else
     {
