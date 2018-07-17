@@ -1,6 +1,4 @@
-const saver = store => next => action => {
-    let result = next(action)
+export default store => next => action => {
     localStorage['redux-store'] = JSON.stringify(store.getState())
-    return result
+    return next(action)
 }
-module.exports = saver;

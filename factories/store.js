@@ -1,15 +1,22 @@
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension';
+import { createLogger } from 'redux-logger'
 
-import logger from '../middlewares/logger'
-import saver from '../middlewares/saver'
-import auth from '../middlewares/auth'
+import { routerMiddleware } from 'react-router-redux'
+import createHistory from 'history/createBrowserHistory';
+
+import {logger, saver, auth} from '../middlewares'
+
 import user from '../reducers/user'
 import cart from '../reducers/cart'
 import kitchens from '../reducers/kitchens'
 import plates from '../reducers/plates'
 
-const state = {
+import { routerReducer } from 'react-router-redux';
+
+const reducers = combineReducers({user,cart,kitchens,plates});
+
+const defaultState = {
     user: {
         isLoggedIn : false,
         details: {
@@ -20,14 +27,16 @@ const state = {
     kitchens:[],
     plates:[]
 }
-const storeFactory = (initialState=state) =>
 
-    applyMiddleware(logger, saver, auth)(createStore)(
-        combineReducers({user,cart,kitchens,plates}),
-        (localStorage['redux-store']) ?
-            JSON.parse(localStorage['redux-store']) :
-            state
-    )
+export const history = createHistory();
 
+// Build the middleware for intercepting and dispatching navigation actions
+const myRouterMiddleware = routerMiddleware(history);
 
-module.exports = storeFactory;
+const getMiddleware = () =>  applyMiddleware(myRouterMiddleware, logger, saver, auth, createLogger())
+
+const state = localStorage['redux-storee'] ? JSON.parse(localStorage['redux-storee']) : defaultState ;
+
+const createStoreWithMiddleware =  composeWithDevTools(getMiddleware())(createStore);
+
+export default (initialState=defaultState) => createStoreWithMiddleware(reducers, state)

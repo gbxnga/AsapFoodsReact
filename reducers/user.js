@@ -56,7 +56,7 @@ export default (state = {}, action) => {
             return {
                 isLoggedIn : true,
                 details: { // Returns a new color object constructed from the action’s payload data.
-                    id
+                    id,
                     name,
                     address,
                     phone,

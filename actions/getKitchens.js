@@ -1,10 +1,11 @@
-import C from '../constants/constants'
+import {GET_KITCHENS_API} from '../constants/api'
+import {GET_KITCHENS_LIST, GET_KITCHENS_LIST_FAILED } from '../constants'
 import axios from "axios";
 const getKitchens = (auth_token,callback, dispatch) =>{
     var formData = new FormData();
     formData.append("token", auth_token);
 
-    axios.get(`${C.GET_KITCHENS_API}?token=${auth_token}`)
+    axios.get(`${GET_KITCHENS_API}?token=${auth_token}`)
       .then(response => {
         console.log(response)
         return response
@@ -19,7 +20,7 @@ const getKitchens = (auth_token,callback, dispatch) =>{
                 return [value];
             });
             dispatch({
-                type:C.GET_KITCHENS_LIST,
+                type:GET_KITCHENS_LIST,
                 kitchens: array
             })
             callback(array);
@@ -27,7 +28,7 @@ const getKitchens = (auth_token,callback, dispatch) =>{
         else
         {
             dispatch({
-                type: C.GET_KITCHENS_LIST_FAILED
+                type: GET_KITCHENS_LIST_FAILED
             })
         }
       })

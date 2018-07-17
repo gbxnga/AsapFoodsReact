@@ -11,33 +11,33 @@ import 'bootstrap/dist/js/bootstrap';
 import Bootstrap from 'bootstrap/dist/css/bootstrap.css';
 import axios from "axios";
 
-import toast from '../modules/toast'
+import toast from './modules/toast'
 
-import  '../modules/offline'
+import  './modules/offline'
 import 'font-awesome/css/font-awesome.css';
-import styles from '../src/css/main.css'
+import styles from './src/css/main.css'
 
 window.React = React
 
-import loginUser from '../actions/loginUser'
-import LoginContainer from '../components/container/LoginContainer'
-import HomeContainer from '../components/container/HomeContainer'
-import KitchensContainer from '../components/container/KitchensContainer'
-import ItemsContainer from '../components/container/ItemsContainer'
-import CheckoutContainer from '../components/container/CheckoutContainer'
-import ProfileContainer from '../components/container/ProfileContainer'
-import RegisterContainer from '../components/container/RegisterContainer'
-import OrderContainer from '../components/container/OrderContainer'
-import ContactUs from '../components/presentation/ContactUs'
+import loginUser from './actions/loginUser'
+import LoginContainer from './components/container/LoginContainer'
+import HomeContainer from './components/container/HomeContainer'
+import KitchensContainer from './components/container/KitchensContainer'
+import ItemsContainer from './components/container/ItemsContainer'
+import CheckoutContainer from './components/container/CheckoutContainer'
+import ProfileContainer from './components/container/ProfileContainer'
+import RegisterContainer from './components/container/RegisterContainer'
+import OrderContainer from './components/container/OrderContainer'
+import ContactUs from './components/presentation/ContactUs'
 
 import { connect } from 'react-redux'
-import user from '../reducers/user'
+import user from './reducers/user'
 
 
-import storeFactory from '../factories/store'
+import storeFactory from './factories/store'
 import {
     CREATE_PLATE_API,
-} from '../constants/api'
+} from './constants/api'
   
 //export default storeFactory
 const store = storeFactory(true)
@@ -90,7 +90,7 @@ class App extends React.Component {
                     if (json.data.success)
                     {
                         toast('Items added!')
-                        this.props.history.push('../../checkout')
+                        this.props.history.push('././checkout')
                     }
                     else
                     {
