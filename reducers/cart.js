@@ -1,7 +1,9 @@
-import C from '../constants/constants'
+import {
+    GET_NUMBER_OF_PLATES
+} from '../constants'
 const cart = (state = {}, action) => {
     switch (action.type) {
-        case C.GET_NUMBER_OF_PLATES:
+        case GET_NUMBER_OF_PLATES:
             return 0     
             
         default :

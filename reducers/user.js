@@ -1,72 +1,84 @@
-import C from '../constants/constants'
-const user = (state = {}, action) => {
+import {
+    LOGIN_USER_SUCCESSFUL,
+    LOGIN_USER_FAILED,
+    REGISTER_USER_SUCCESSFUL,
+    REGISTER_USER_FAILED,
+    LOGOUT_USER_SUCCESSFUL,
+    LOGOUT_USER_FAILED,
+    UPDATE_PROFILE_SUCCESSFUL,
+    INCREMENT_ORDERS,
+    UPDATE_PROFILE_FAILED
+    
+} from '../constants'
+export default (state = {}, action) => {
+
+    const {id, name, address, phone, email, auth_token, auth_type, orders, timestamp} = action
     switch (action.type) {
-        case C.LOGIN_USER_SUCCESSFUL:
+        case LOGIN_USER_SUCCESSFUL:
             return {
                 isLoggedIn : true,
                 details: { // Returns a new color object constructed from the action’s payload data.
-                    id: action.id,
-                    name: action.name,
-                    address: action.address,
-                    phone: action.phone,
+                    id,
+                    name,
+                    address,
+                    phone,
                     //username: action.username,
-                    email:action.email,
-                    auth_token: action.auth_token,
-                    auth_type:action.auth_type,
-                    orders:action.orders,
-                    timestamp: action.timestamp
+                    email,
+                    auth_token,
+                    auth_type,
+                    orders,
+                    timestamp
                 }
             } 
-        case C.LOGIN_USER_FAILED:
+        case LOGIN_USER_FAILED:
             return {
                 isLoggedIn : false,
                 details: {}
             } 
-        case C.REGISTER_USER_SUCCESSFUL:
+        case REGISTER_USER_SUCCESSFUL:
             return {
                 isLoggedIn : false,
                 details: {}
             } 
-        case C.REGISTER_USER_FAILED:
+        case REGISTER_USER_FAILED:
             return {
                 isLoggedIn : false,
                 details: {}
             } 
-        case C.LOGOUT_USER_SUCCESSFUL:
+        case LOGOUT_USER_SUCCESSFUL:
             return {
                 isLoggedIn : false,
                 details: {}
             }
-        case C.LOGOUT_USER_FAILED:
+        case LOGOUT_USER_FAILED:
             return state   
-        case C.UPDATE_PROFILE_SUCCESSFUL:
+        case UPDATE_PROFILE_SUCCESSFUL:
             return {
                 isLoggedIn : true,
                 details: { // Returns a new color object constructed from the action’s payload data.
-                    id: action.id,
-                    name: action.name,
-                    address: action.address,
-                    phone: action.phone,
+                    id
+                    name,
+                    address,
+                    phone,
                     //username: action.username,
-                    email:action.email,
-                    auth_token: action.auth_token,
-                    auth_type:action.auth_type,
-                    orders:action.orders,
-                    timestamp: action.timestamp,
+                    email,
+                    auth_token,
+                    auth_type,
+                    orders,
+                    timestamp,
                     
                 }
             } 
-        case C.INCREMENT_ORDERS:
+        case INCREMENT_ORDERS:
 
             return {
                 ...state,...state.details, orders: state.details.orders++
             }
 
-        case C.UPDATE_PROFILE_FAILED:
+        case UPDATE_PROFILE_FAILED:
             return state
             
         default :
             return state
     }
 }
-module.exports = user;

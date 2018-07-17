@@ -3,7 +3,7 @@ var path = require('path');
 const dist = 'dist'
 //const workboxPlugin = require('workbox-webpack-plugin');
 module.exports = {
-    entry: './app/main.js',
+    entry: './App.js',
     //entry: './index-client.js',
     output: {
        path: path.resolve(__dirname,""),
