@@ -6,26 +6,20 @@ import Header from './presentation/Header'
 
 class ComponentWithHeader extends React.Component {
 
-    render() {
-        const {openNav, closeNav} = this.context
 
-        const {Component, headerTitle} = this.props
+    render() {
+
+        const {Component, headerProps } = this.props
 
         return (
             <div>
-                <NavComponent closeNav={closeNav}/>
-                <Header title={headerTitle} openNav={openNav}/>
+                <NavComponent />
+                <Header {...headerProps} />
                 <Component/>
             </div>
         )
     }
 
-}
-
-ComponentWithHeader.contextTypes = {
-    store: PropTypes.object,
-    openNav: PropTypes.func,
-    closeNav: PropTypes.func
 }
 
 module.exports = ComponentWithHeader

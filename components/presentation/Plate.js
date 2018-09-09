@@ -1,12 +1,16 @@
 import constants from '../../constants/constants';
-const Plate = ({deletePlate=f=>f,plate, deleteBtn=true}) =>{
+const Plate = ({deletePlate=f=>f,plate, deleteBtn=true, deleting = false}) =>{
 
     
     const items =    $.map(plate.items, (item) => { return [item] })
     return(
     <div id={`plate_${plate.id}`} data-plate-id={plate.id} className={`media-con plate-container-class plate_${plate.id}`} style={{boxShadow: "0 3px 10px rgba(0,0,0,0.1), 0 3px 4px rgba(0,0,0,0.1)",borderRadius:3, marginBottom:15,padding:15, backgroundColor:"white",paddingTop:7}}>
         <img style={{marginTop:0}} width="25" height="25" src={`${constants.site}/src/images/tray.png`}/>
-        {(deleteBtn) ? <span id={`btn_delete_plate_${plate.id}`} onClick={()=>deletePlate()} data-plate-id={`${plate.id}`} className="glyphicon glyphicon-trash delete-plate-btn" style={{display:"block",cursor:"pointer",float:"right", padding:"4px 1px", zoom:"130%"}}></span>:""}
+        {(deleteBtn) ? 
+        <span id={`btn_delete_plate_${plate.id}`} onClick={()=>deletePlate()} data-plate-id={`${plate.id}`} className={`${ deleting ? 'fa fa-spinner fa-spin fa-1x fa-fw': 'glyphicon glyphicon-trash'} delete-plate-btn`} style={{display:"block",cursor:"pointer",float:"right", padding:"4px 1px", zoom:"130%"}}></span>
+        :
+        ""
+        }
 
         <p>Kitchen: {plate.kitchen}</p>
         {(items.length == 0) ? "No item" : items.map((item) => 

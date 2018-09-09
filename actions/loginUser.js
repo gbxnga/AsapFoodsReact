@@ -5,34 +5,27 @@ import {
 import {
     LOGIN_USER_API,
 } from '../constants/api'
-import toast from '../modules/toast'
+
 import axios from "axios";
 
 import createHistory from 'history/createBrowserHistory';
 const history = createHistory();
 
 export default (email, password, dispatch) =>{
-    //$('#login-form button').attr("disabled", "disabled").html('<i class="fa fa-spinner fa-spin fa-1x fa-fw"></i><span class="sr-only">Loading...</span>');
 
-        
-    var formData = new FormData();
-    formData.append("email", email);
-    formData.append("password", password);
-
-    axios.get(`${LOGIN_USER_API}/${email}/${password}`)
+    return axios.get(`${LOGIN_USER_API}/${email}/${password}`) 
       .then(response => {
         console.log(response)
-        return response
-      })
-      .then(json => {
-        if (json.data.success)
+        console.table(response.data.data)
+        
+        const { success, data } = response.data
+        if ( success )
         {
-            let {password, name, address, phone, id, email, auth_token, auth_type, orders, oauth_provider} = json.data.data
+            let { password, name, address, phone, id, email, auth_token, auth_type, orders, oauth_provider } = response.data.data
             dispatch({
                 type: LOGIN_USER_SUCCESSFUL,
-                //username: json.data.data.username,
                 password,
-                name,
+                name: data.fullname,
                 address,
                 phone,
                 id,
@@ -42,22 +35,17 @@ export default (email, password, dispatch) =>{
                 orders,
                 timestamp: new Date().toString()
             })
-            toast('Login Successful!')
+            
         }
         else
         {
             dispatch({
                 type: LOGIN_USER_FAILED
             })
-            toast('Login Failed!')
+            
         }
-        $("#login-form button").removeAttr("disabled").html('Login');
+        return success
+        
       })
-      .catch((error) => {
-        toast('An Error Occured!')
-        console.error(error)
-          console.log(`${LOGIN_USER_API}/${email}/${password} ${error}`)
-          $("#login-form button").removeAttr("disabled").html('Login');
-      });
 
 }

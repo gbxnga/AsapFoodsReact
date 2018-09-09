@@ -2,13 +2,27 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
-import NavComponent from '../NavComponent'
-import Header from '../presentation/Header'
-import KitchensList from '../presentation/KitchensList'
-import getKitchens from '../../actions/getKitchens'
-import kitchens from '../../reducers/kitchens'
 
+import KitchensList from '../presentation/KitchensList'
 import ComponentWithHeader from '../componentWithHeader'
+
+
+import getKitchens from '../../actions/getKitchens'
+import { kitchens, user, plates } from '../../reducers'
+
+const mapStateToProps = state => {
+    return {
+      kitchens: state.kitchens,
+      user: state.user,
+      plates: state.plates,
+      
+    }
+};
+const mapDispatchToProps = dispatch => ({
+    getKitchens(auth_token) {
+        return getKitchens(auth_token,dispatch)
+    }
+})
 
 class KitchensContainer extends React.Component
 {
@@ -26,21 +40,19 @@ class KitchensContainer extends React.Component
     {
         // if kitchens list has not been loaded to store
         // call getKitchens action
-        let {kitchens, plates} = this.context.store.getState()
-        
-        
-        $('header #right').attr('data-content', `${plates.length}`);
+        let {kitchens, plates} = this.props
+        console.log('KITCHEN PROPS')
+        console.log(this.props)
+               
+        //$('header #right').attr('data-content', `${plates.length}`);
         
         
         if (kitchens.length < 1)
         {
-            const { getKitchens } = this.props
-            const { user } = this.context.store.getState()
-            const { auth_token } = user.details
-            
+            const { getKitchens, user } = this.props
+            const { auth_token } = user.details            
 
-            // the state should be reset after the kitchens list is feched from the sever and the store updated
-            
+            // the state should be reset after the kitchens list is feched from the sever and the store updated           
             try {
 
                 const kitchens = await getKitchens(auth_token)
@@ -61,9 +73,8 @@ class KitchensContainer extends React.Component
     }
     render(){
         //const {kitchens} = this.state
-        const {openNav, closeNav} = this.context
-        const {kitchens,loading} = this.state
-        //if (kitchens.length > 0) this.state.loading = false;
+        //const {openNav, closeNav} = this.context
+        const { kitchens,loading } = this.state
         
         
         return(
@@ -71,7 +82,10 @@ class KitchensContainer extends React.Component
             <div>
                 
                 <ComponentWithHeader 
-                    headerTitle="Pick Kitchen"
+                    headerProps={{
+                        title:"Pick kitchen",
+                        showBack:false   
+                    }}
                     Component={ () => loading ? 
                         <div id="load" style={{backgroundColor:"transparent",opacity:0.9}}>
                                 <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
@@ -85,19 +99,7 @@ class KitchensContainer extends React.Component
     }
 
 }
-KitchensContainer.contextTypes = {
-    store: PropTypes.object,
-    openNav: PropTypes.func,
-    closeNav: PropTypes.func
-}
-export default connect(
-    (state, props) =>  { kitchens },
-    dispatch =>
-        ({
-            getKitchens(auth_token) {
-                return getKitchens(auth_token,dispatch)
-            }
-        })
-)(KitchensContainer)
-//module.exports = KitchensContainer;
+
+export default connect( mapStateToProps, mapDispatchToProps )( KitchensContainer )
+
 

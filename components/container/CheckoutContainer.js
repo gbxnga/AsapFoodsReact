@@ -2,19 +2,18 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
-import NavComponent from '../NavComponent'
-import Header from '../presentation/Header'
+import ComponentWithHeader from '../componentWithHeader'
+
 import KitchensList from '../presentation/KitchensList'
 import PlateList from '../presentation/PlateList'
 import CheckoutInfo from '../presentation/CheckoutInfo'
 import ErrorPage from '../presentation/ErrorPage'
 
 import getPlates from '../../actions/getPlates'
-import deletePlate from '../../actions/deletePlate'
-import plates from '../../reducers/plates'
-import user from '../../reducers/user'
+
+import { plates, user } from '../../reducers/';
 import C from '../../constants/constants'
-//import {deletePlate, getPlates} from '../../actions/'
+
 import axios from "axios";
 
 import {NavLink, Redirect} from 'react-router-dom'
@@ -59,33 +58,23 @@ class CheckoutContainer extends React.Component
             console.table(plates)
         
             this.setState({
-                ...this.state, 
-                plates, 
+                 
                 loading:false
             })
         }
         catch (error){
             console.error(error)
-            this.setState({kitchens:[], loading:false})
+            this.setState({loading:false})
         }
         
         
     }
-    componentDidUpdate()
-    {
-        //$('header #right').attr('data-content', `${this.state.plates.length}`);
-        
-    }
-    componentWillReceiveProps(){
-        console.log('receiving update..')
-    }
+    
     displayThankYou(){
         this.setState({showThankYou:true, plates:[]});       
     }
     processOrder() {
-        //let json;
-        //if (!validateForm('checkout'))
-            //return;
+        
            
             const {user} = this.context.store.getState()
             let token = user.details.auth_token
@@ -254,10 +243,8 @@ class CheckoutContainer extends React.Component
     }
     render(display){
         const {showThankYou, loading, area_charge} = this.state
-        const {plates, user} = this.context.store.getState()
-        const {openNav, closeNav} = this.context
-
-        $('header #right').attr('data-content', `${plates.length}`);
+        const { plates, user } = this.props
+        
 
         let sub_total=0, delivery_charge =0, grand_total =0
         delivery_charge = plates.length * area_charge
@@ -313,33 +300,44 @@ class CheckoutContainer extends React.Component
             <NavLink className="landing-page-btn center-block text-center " style={{backgroundColor:"#FF4C00",clear:"both"}} id="email-login-btn " to="./">FINISH</NavLink>
             </div>
         : (loading) ?
-        <div>
-        <NavComponent closeNav={closeNav}/>
-        <Header title='Checkout' openNav={openNav}/>
-        <div id="load" style={{backgroundColor:"transparent",opacity:0.9}}>
-        <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
-    
-        </div>
-        </div>
+        
+            <ComponentWithHeader 
+                headerProps={{
+                    title:"Checkout",
+                    showBack:false   
+                }}
+                Component={ () => <div id="load" style={{backgroundColor:"transparent",opacity:0.9}}>
+                <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+            
+                </div>}
+            />
+            
         :
         
         (plates.length == 0 ) ? 
-        
-        <div>
-        <NavComponent closeNav={closeNav}/>
-        <Header title='Checkout' openNav={openNav}/>
-        <ErrorPage message="Sorry! Your plate is empty"/>
-        </div>
+
+            <ComponentWithHeader 
+                headerProps={{
+                    title:"Checkout",
+                    showBack:false   
+                }}
+                Component={ () => <ErrorPage message="Sorry! Your plate is empty"/> }
+            />        
 
         :
-            <div>
-                <NavComponent closeNav={closeNav}/>
-                <Header title='Checkout' openNav={openNav}/>
+
+            <ComponentWithHeader 
+                headerProps={{
+                    title:"Checkout",
+                    showBack:false   
+                }}
+                Component={ _ =>  
+                
                 <div style={{paddingBottom:75,display:"block"}} className="checkout-page page-container">
                     <div className="container">
                         <div className="row">
                             <div className="col-lg-12">
-                                <PlateList deletePlate={this.props.deletePlate} user={user} plates={plates}/>
+                                <PlateList />
                                 <NavLink title="Add more plates" style={{zIndex:10000000,position:"fixed",bottom:45,right:15,marginBottom:45}} to="kitchens"><img style={{borderRadius:20}} width="45" src="src/icons/add_button.png" /></NavLink>
                                 <hr/>
                                 <form id="verify-coupone-form">
@@ -350,43 +348,43 @@ class CheckoutContainer extends React.Component
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
+                </div> }
+        />
+
         )
     }
 
 }
-CheckoutContainer.contextTypes = {
+/*CheckoutContainer.contextTypes = {
     store: PropTypes.object,
     openNav: PropTypes.func,
     closeNav: PropTypes.func
-}
-export default connect(
-    (state, props) => { 
-        return {
-            plates : plates,
-            user: user
-        }
+}*/
+
+const mapStateToProps = state => {
+    return {
+        
+      user: state.user,
+      plates: state.plates,
+      
+    }
+};
+const mapDispatchToProps = dispatch => ({
+    getPlates(auth_token) {
+        return getPlates(auth_token,dispatch)
     },
-    dispatch =>
-        ({
-            getPlates(auth_token) {
-                return getPlates(auth_token,dispatch)
-            },
-            deletePlate(auth_token, id){
-                deletePlate(auth_token, id, dispatch)
-            },
-            clearPlate(){
-                dispatch({
-                    type: C.CLEAR_PLATE
-                })
-            },
-            incrementOrders(){
-                dispatch({
-                    type: C.INCREMENT_ORDERS
-                })
-            }
+    
+    clearPlate(){
+        dispatch({
+            type: C.CLEAR_PLATE
         })
-)(CheckoutContainer)
+    },
+    incrementOrders(){
+        dispatch({
+            type: C.INCREMENT_ORDERS
+        })
+    }
+})
+export default connect( mapStateToProps, mapDispatchToProps )( CheckoutContainer )
 
 //module.exports = CheckoutContainer;

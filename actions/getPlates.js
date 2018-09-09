@@ -1,5 +1,6 @@
 import C from '../constants/constants'
 import axios from "axios";
+
 const getPlates = (auth_token, dispatch) =>{
     console.log('Getting plates now');
     var formData = new FormData();
@@ -12,16 +13,16 @@ const getPlates = (auth_token, dispatch) =>{
       .then(json => {
         if (json.data.success)
         {
-            let myObj = json.data.data
+            let { data } = json.data
             
-            let array = $.map(myObj, function(value, index) {
+            let plates = $.map(data, function(value, index) {
                 return [value];
             });
             dispatch({
                 type:C.GET_PLATES_LIST,
-                plates: array
+                plates
             })
-            return array
+            return plates
         }
         else
         {

@@ -32,7 +32,7 @@ import RegisterContainer from './components/container/RegisterContainer'
 import OrderContainer from './components/container/OrderContainer'
 import ContactUs from './components/presentation/ContactUs'
 
-import { connect } from 'react-redux'
+import { connect, Provider } from 'react-redux'
 import user from './reducers/user'
 
 
@@ -47,66 +47,6 @@ const store = storeFactory(true)
 
 class App extends React.Component {
 
-    getChildContext() {
-         
-        return {
-            store: this.props.store,
-            openNav: ()=>{
-                $('#mySidenav').animate({
-                    "margin-left": "+0"
-                }, 10, function() {
-                    $('#cover').show();
-                });
-
-            },
-            closeNav: (done=f=>f)=>{
-                $('#cover').hide();
-                $('#mySidenav').animate({
-                    "margin-left": "-80%"
-                }, 10);
-                done();
-
-            },
-            createPlate: ()=>{
-                $('#create-plate-form button').attr("disabled", "disabled").html('<i class="fa fa-spinner fa-spin fa-1x fa-fw"></i><span class="sr-only">Loading...</span>');
-
-                
-                var formData = new FormData();
-                const {user} = this.props.store.getState()
-
-                formData.append("token", user.details.auth_token);
-
-                let array = $('#create-plate-form').serializeArray()
-
-                let new_array = array.map((element, index, {length})=>{
-
-                    formData.append(element.name, element.value);
-                })
-            
-                axios.post(`${CREATE_PLATE_API}`, formData)
-                  .then(response => {
-                    console.log(response)
-                    return response
-                  })
-                  .then(json => {
-                    if (json.data.success)
-                    {
-                        toast('Items added!')
-                        this.props.history.push('././checkout')
-                    }
-                    else
-                    {
-                        toast('Failed to add items')
-                    }
-                    $("#create-plate-form button").removeAttr("disabled").html('<span class="glyphicon glyphicon-plus"></span> Add Items to Plate');
-                  })
-                  .catch((error) => {
-                      console.log(` ${error}`)
-                      $("#create-plate-form button").removeAttr("disabled").html('<span class="glyphicon glyphicon-plus"></span> Add Items to Plate');
-                  });
-            }
-        }
-    }
     /*componentWillMount() {
         if (!this.props.authenticated) {
           this.props.history.push('/signin');
@@ -148,7 +88,8 @@ class App extends React.Component {
 
     render() {
         const { user } = store.getState()
-        // const sortedColors = [...colors].sort(sortFunction(sort))
+        
+        
         if (!user.isLoggedIn && !this.props.location.pathname.endsWith('/login') && !this.props.location.pathname.endsWith('/register')) {
             console.log('you are not loggedin and are not visiting login or register, so go to login pagee')
             this.props.history.push("/login")
@@ -204,19 +145,15 @@ class App extends React.Component {
 App.propTypes = {
     store: PropTypes.object.isRequired
 }
-App.childContextTypes = {
-    store: PropTypes.object.isRequired,
-    openNav: PropTypes.func,
-    logoutUser: PropTypes.func,
-    closeNav: PropTypes.func,
-    createPlate: PropTypes.func
-}
+
 const AppContainer = withRouter(props => <App {...props}/>);
 console.log(store.getState())
 render (
     
     <BrowserRouter>
-        <AppContainer store={store} />
+        <Provider store={store}>
+            <AppContainer store={store} />
+        </Provider>
     </BrowserRouter>
     
     ,

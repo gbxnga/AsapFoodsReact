@@ -10,7 +10,7 @@ const mapStateToProps = state => { return user } ;
 
 const mapDispatchToProps = dispatch => ({
     loginUser(username, pass) {
-        loginUser(username,pass, dispatch)
+        return loginUser(username,pass, dispatch)
     }
 });
 
@@ -25,15 +25,44 @@ class Login extends Component {
         this.passwordInput = React.createRef();
 
         this.handleLogin = this.handleLogin.bind(this)
+        this._loginUser = this._loginUser.bind(this)
     }
 
+
+    async _loginUser(email, pass){
+
+
+        const { loginUser } = this.props
+
+        try {
+
+            this.setState({loading:true})
+
+            const success = await loginUser(email, pass)
+
+            if(success){
+                toast('Login Successful!')
+            }
+            else{
+                toast('Login Failed!')
+            }
+            this.setState({loading:false})
+
+        }
+        catch(error){
+            toast('An Error Occured!')
+            this.setState({loading:false})
+        }
+        
+
+    }
         
     handleLogin(e){
             e.preventDefault() 
 
             const email = this.userInput.value
             const pass = this.passwordInput.value
-            const {loginUser} = this.props
+            
 
            var regexPassword = /^[a-zA-Z_0-9]{5,12}$/;
            var regexEmail = /^(([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5}){1,25})+([;.](([a-zA-Z0-9_\-\.]+)@{[a-zA-Z0-9_\-\.]+0\.([a-zA-Z]{2,5}){1,25})+)*$/;
@@ -48,8 +77,8 @@ class Login extends Component {
                toast("Password invalid!");
                return false;
            } else {
-               this.setState({loading:true})
-               loginUser(email,pass) 
+               
+               this._loginUser(email,pass) 
            }
            
        } 
@@ -57,7 +86,7 @@ class Login extends Component {
 
     render(){
 
-        const {loading} = this.state
+        const { loading } = this.state
 
         return(
             <div id="" style={{ marginTop: "10%",display:"block" }} className="login-with-page page-container col-md-12">           

@@ -1,6 +1,6 @@
 
 
-import browserHistory from 'react-router-dom';
+import browserHistory from 'history';
 import { push } from 'redux-little-router'
 import createHandlerMiddleware from 'redux-handler-middleware';
 //import {FETCH_POST_FAILURE, FETCH_POSTS_FAILURE} from 'constants/blog';
@@ -9,7 +9,9 @@ export const handlerMiddleware = createHandlerMiddleware([{
     actions: ["LOGIN_USER_SUCCESSFUL"],
     afterHandler: (store, action) => {
         if(action.type == "LOGIN_USER_SUCCESSFUL"){
-            //browserHistory.replace({pathname: '/'})
+            //browserHistory.replace({pathname: '/'})  
+            store.dispatch(push('/profile')) 
+            
         }
     }
 }]);
@@ -24,6 +26,7 @@ export const auth = store => next => action => {
     
     if (action.type == "LOGIN_USER_SUCCESSFUL") {
         console.log('sending u to dashboad');
+        store.dispatch(push('/profile')) 
         action = {
             ...action, 
             afterHandler: (action) => {

@@ -2,7 +2,7 @@ import KitchenBanner from './KitchenBanner'
 import Item from './Item'
 import ErrorPage from './ErrorPage'
 
-const KitchenItems = ({kitchen, items, createPlate=f=>f, filter=f=>f, filterItem=f=>f, _searchUpdated=f=>f, _createPlate=f=>f, _incrementItem=f=>f, selectedItems, _filterItemsBy=f=>f, category}) =>{
+const KitchenItems = ({kitchen, items, createPlate=f=>f, filter=f=>f, filterItem=f=>f, _searchUpdated=f=>f, _createPlate=f=>f, _incrementItem=f=>f, selectedItems, _filterItemsBy=f=>f, category, loading}) =>{
 let _searchTerm
 const ITEM_CATEGORIES = ['All', 'Swallow','Sides','Grain','Protein','Snacks','Soup','Others']
 
@@ -72,7 +72,19 @@ return (
             <input autoComplete="off" id="kitchen_id" name="kitchen_id" type="text" value={kitchen.kitchen_id} hidden="hidden" />
             <div style={{width:"100%",height:100,width:"100%"}}></div>
             <div id="create-plate-form-container">
-                <button style={{height:34}} className="center-block" type="submit"><span style={{fontSize:14, fontFamily:"inherit !important"}} className="glyphicon glyphicon-plus"></span> Add Items to Plate</button>
+                <button style={{height:34}} className="center-block" type="submit" disabled={loading}>
+                    { loading ?
+                    <span>
+                        <i className="fa fa-spinner fa-spin fa-1x fa-fw"></i>
+                        <span className="sr-only">Loading...</span>
+                    </span>
+                    :
+                    <span>
+                        <span style={{fontSize:14, fontFamily:"inherit !important"}} className="glyphicon glyphicon-plus"></span> 
+                        <span>Add Items to Plate</span>
+                    </span>
+                    }
+                </button>
             </div>
         </form>
 
