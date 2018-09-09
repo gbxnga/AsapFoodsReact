@@ -37,10 +37,12 @@ class ItemsContainer extends React.Component
         this._createPlate = this._createPlate.bind(this)   
         this._filterItemsBy = this._filterItemsBy.bind(this)
     }
-    componentWillMount()
+    
+    componentDidMount()
     {
         
-        const {user} = this.context.store.getState()
+        const {user, plates} = this.context.store.getState()
+        $('header #right').attr('data-content', `${plates.length}`);
     
         axios.get(`${C.KITCHEN_DETAILS_API}/${this.props.match.params.id}/${this.props.match.params.name}?token=${user.details.auth_token}`)
           .then(response => {
@@ -50,14 +52,14 @@ class ItemsContainer extends React.Component
           .then(json => {
             if (json.data.success)
             {
-                let myObj = json.data.data
+                const {data} = json.data
                 
-                let array = $.map(myObj, function(value, index) {
+                const items = $.map(data, function(value, index) {
                     return [value];
                 });
-                let kitchen = json.data.kitchen
-                let items = array
-                this.setState({kitchen:kitchen, items:items, loading:false})
+                const {kitchen} = json.data
+                
+                this.setState({kitchen, items, loading:false})
             }
             else
             {
@@ -160,11 +162,7 @@ class ItemsContainer extends React.Component
             });
     }
     
-    componentDidMount()
-    {
-        const {plates} = this.context.store.getState()
-        $('header #right').attr('data-content', `${plates.length}`);
-    }
+
     render(){
         const {kitchen, items, loading, searchTerm, category, selectedItems, kitchens} = this.state
         const {openNav, closeNav, createPlate} = this.context

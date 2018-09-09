@@ -44,30 +44,36 @@ class CheckoutContainer extends React.Component
         this._updateAreaCharge = this._updateAreaCharge.bind(this)
         console.log(this.state)
     }
-    componentWillMount()
+    async componentDidMount()
     {       
         // if kitchens list has not been loaded to app state
         // call getKitchens action
-        //console.log(this.context.store.getState())
-        let {plates} = this.context.store.getState()
         
+        const { plates, user, getPlates } = this.props
+        const { auth_token } = user.details
+    
+        try {
 
-        //if (plates.length == 0)
-        //{
-            let {user} = this.context.store.getState()
-            this.props.getPlates(user.details.auth_token, (plates)=>this.setState(
-                {
-                    ...this.state, plates:plates, loading:false
-                }
-            ))          
-        //}
-        //else this.setState({...this.state, loading:false,plates:plates})
+            const plates = await getPlates(auth_token)
+
+            console.table(plates)
+        
+            this.setState({
+                ...this.state, 
+                plates, 
+                loading:false
+            })
+        }
+        catch (error){
+            console.error(error)
+            this.setState({kitchens:[], loading:false})
+        }
         
         
     }
     componentDidUpdate()
     {
-        $('header #right').attr('data-content', `${this.state.plates.length}`);
+        //$('header #right').attr('data-content', `${this.state.plates.length}`);
         
     }
     componentWillReceiveProps(){
@@ -364,8 +370,8 @@ export default connect(
     },
     dispatch =>
         ({
-            getPlates(auth_token, callback) {
-                getPlates(auth_token,callback,dispatch)
+            getPlates(auth_token) {
+                return getPlates(auth_token,dispatch)
             },
             deletePlate(auth_token, id){
                 deletePlate(auth_token, id, dispatch)

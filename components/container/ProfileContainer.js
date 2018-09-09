@@ -21,10 +21,7 @@ class ProfileContainer extends React.Component
     {
         $('.modal-backdrop').remove();
     }
-    componentWillReceiveProps()
-    {
-        console.log('Profile Container: im receiveing props')
-    }
+    
     componentDidMount(){
         const {plates} = this.context.store.getState()
         

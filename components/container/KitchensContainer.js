@@ -8,6 +8,8 @@ import KitchensList from '../presentation/KitchensList'
 import getKitchens from '../../actions/getKitchens'
 import kitchens from '../../reducers/kitchens'
 
+import ComponentWithHeader from '../componentWithHeader'
+
 class KitchensContainer extends React.Component
 {
     constructor(props)
@@ -18,31 +20,44 @@ class KitchensContainer extends React.Component
             loading: true
         }
         
+               
     }
-    componentWillMount()
+    async componentDidMount()
     {
         // if kitchens list has not been loaded to store
         // call getKitchens action
-        let {kitchens} = this.context.store.getState()
+        let {kitchens, plates} = this.context.store.getState()
         
-        if (kitchens.length == 0)
+        
+        $('header #right').attr('data-content', `${plates.length}`);
+        
+        
+        if (kitchens.length < 1)
         {
-            let {user} = this.context.store.getState()
-            console.log('GETTING KITCHENS FROM SERVER')
+            const { getKitchens } = this.props
+            const { user } = this.context.store.getState()
+            const { auth_token } = user.details
+            
 
             // the state should be reset after the kitchens list is feched from the sever and the store updated
-            this.props.getKitchens(user.details.auth_token, (kitchens)=>{console.log('calloing callback now');this.setState({kitchens:kitchens, loading:false})})
             
+            try {
+
+                const kitchens = await getKitchens(auth_token)
+
+                console.table(kitchens)
+            
+                this.setState({kitchens, loading:false})
+            }
+            catch (error){
+                console.error(error)
+                this.setState({kitchens:[], loading:false})
+            }
+                       
         }
-        else  this.setState({kitchens:kitchens, loading:false}) // load from store and setState
+        else  this.setState({kitchens, loading:false}) // load from store and setState*/
         
         
-    }
-    componentDidMount()
-    {
-        console.log(this.props)
-        const {plates} = this.context.store.getState()
-        $('header #right').attr('data-content', `${plates.length}`);
     }
     render(){
         //const {kitchens} = this.state
@@ -50,17 +65,21 @@ class KitchensContainer extends React.Component
         const {kitchens,loading} = this.state
         //if (kitchens.length > 0) this.state.loading = false;
         
+        
         return(
+            
             <div>
-            <NavComponent closeNav={closeNav}/>
-            <Header title='Pick Kitchen' openNav={openNav}/>
-            {(loading) ? 
-            <div id="load" style={{backgroundColor:"transparent",opacity:0.9}}>
-                    <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
                 
-            </div>
-            :
-            <KitchensList kitchens={kitchens}/>}
+                <ComponentWithHeader 
+                    headerTitle="Pick Kitchen"
+                    Component={ () => loading ? 
+                        <div id="load" style={{backgroundColor:"transparent",opacity:0.9}}>
+                                <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+                            
+                        </div>
+                        :
+                        <KitchensList kitchens={kitchens}/>}
+                />
             </div>
         )
     }
@@ -72,15 +91,11 @@ KitchensContainer.contextTypes = {
     closeNav: PropTypes.func
 }
 export default connect(
-    (state, props) => { 
-        return {
-            kitchens : kitchens
-        }
-    },
+    (state, props) =>  { kitchens },
     dispatch =>
         ({
-            getKitchens(auth_token, callback) {
-                getKitchens(auth_token,callback, dispatch)
+            getKitchens(auth_token) {
+                return getKitchens(auth_token,dispatch)
             }
         })
 )(KitchensContainer)

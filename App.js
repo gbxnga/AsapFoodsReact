@@ -17,6 +17,8 @@ import  './modules/offline'
 import 'font-awesome/css/font-awesome.css';
 import styles from './src/css/main.css'
 
+import 'babel-polyfill';
+
 window.React = React
 
 import loginUser from './actions/loginUser'
