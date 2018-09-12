@@ -4,7 +4,7 @@ const dist = 'dist'
 //const workboxPlugin = require('workbox-webpack-plugin');
 module.exports = {
     entry: ["babel-polyfill", './App.js'],
-    //entry: './index-client.js',
+    //entry: './index-client.js', 
     output: {
        path: path.resolve(__dirname,""),
         //path: path.join(dist,"/assets/js/"),

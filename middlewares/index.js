@@ -24,7 +24,7 @@ export const auth = store => next => action => {
     state = store.getState();
     console.log(state)
     
-    if (action.type == "LOGIN_USER_SUCCESSFUL") {
+    /*if (action.type == "LOGIN_USER_SUCCESSFUL") {
         console.log('sending u to dashboad');
         store.dispatch(push('/profile')) 
         action = {
@@ -33,7 +33,7 @@ export const auth = store => next => action => {
                 browserHistory.replace({pathname: '/'});
             }
         }
-    }
+    }*/
     if (action.type != "LOGIN_USER_SUCCESSFUL" && action.type != "LOGIN_USER_FAILED" && !state.user.isLoggedIn)
     {
         
@@ -50,12 +50,12 @@ export const auth = store => next => action => {
 export const logger = store => next => action => {
     let result
     
-    console.groupCollapsed("dispatching", action.type)
-    console.log('prev state', store.getState())
-    console.log('action', action)
+    //console.groupCollapsed("dispatching", action.type)
+    //console.log('prev state', store.getState())
+    //console.log('action', action)
     result = next(action)
-    console.log('next state', store.getState())
-    console.groupEnd()
+    //console.log('next state', store.getState())
+    //console.groupEnd()
 }
 
 export const saver = store => next => action => {

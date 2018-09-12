@@ -3,8 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
 import ComponentWithHeader from '../componentWithHeader'
-
-import KitchensList from '../presentation/KitchensList'
+ 
 import PlateList from '../presentation/PlateList'
 import CheckoutInfo from '../presentation/CheckoutInfo'
 import ErrorPage from '../presentation/ErrorPage'

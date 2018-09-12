@@ -33,9 +33,9 @@ const mapDispatchToProps = dispatch => ({
 
 class ItemsContainer extends React.Component
 {
-    constructor(props)
+    constructor( props )
     {
-        super(props)
+        super( props )
 
         const { params } = this.props.match
 
@@ -60,8 +60,7 @@ class ItemsContainer extends React.Component
     componentDidMount()
     {
         
-        const {user, plates} = this.props
-        $('header #right').attr('data-content', `${plates.length}`);
+        const {user, plates} = this.props 
     
         axios.get(`${C.KITCHEN_DETAILS_API}/${this.props.match.params.id}/${this.props.match.params.name}?token=${user.details.auth_token}`)
           .then(response => {
@@ -82,10 +81,7 @@ class ItemsContainer extends React.Component
             }
             else
             {
-                this.setState({kitchens:[],loading:false, kitchenName:this.props.match.params.name})
-                
-                console.log('kitchens empty')
-                //this.state.kitchens = []                
+                this.setState({kitchens:[],loading:false, kitchenName:this.props.match.params.name})                
             }
           })
           .catch((error) => {

@@ -10,7 +10,7 @@ import {
     UPDATE_PROFILE_FAILED
     
 } from '../constants'
-export default (state = {}, action) => {
+export default ( state = {}, action ) => {
 
     const {id, name, address, phone, email, auth_token, auth_type, orders, timestamp} = action
     switch (action.type) {

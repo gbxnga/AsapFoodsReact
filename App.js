@@ -21,16 +21,16 @@ import 'babel-polyfill';
 
 window.React = React
 
-import loginUser from './actions/loginUser'
-import LoginContainer from './components/Login/'
-import HomeContainer from './components/container/HomeContainer'
-import KitchensContainer from './components/container/KitchensContainer'
+
+import Login from './components/Login/'
+import Home from './components/Home'
+import Kitchens from './components/Kitchens'
 import ItemsContainer from './components/container/ItemsContainer'
 import CheckoutContainer from './components/container/CheckoutContainer'
 import ProfileContainer from './components/container/ProfileContainer'
-import RegisterContainer from './components/container/RegisterContainer'
+import Register from './components/Register'
 import OrderContainer from './components/container/OrderContainer'
-import ContactUs from './components/presentation/ContactUs'
+import ContactUs from './components/ContactUs'
 
 import { connect, Provider } from 'react-redux'
 import user from './reducers/user'
@@ -47,17 +47,7 @@ const store = storeFactory(true)
 
 class App extends React.Component {
 
-    /*componentWillMount() {
-        if (!this.props.authenticated) {
-          this.props.history.push('/signin');
-        }
-      }
-  
-      componentWillUpdate(nextProps) {
-        if (!nextProps.authenticated) {
-          this.props.history.push('/signin');
-        }
-      }*/
+    
       componentDidMount(){
         console.log('Updated!')
 
@@ -104,17 +94,17 @@ class App extends React.Component {
             
                 <Switch> 
                     <div id="main">
-                    <Route exact  path="/" component={HomeContainer} />
+                    <Route exact  path="/" component={Home} />
                     
-                    <Route  path="/login" component={LoginContainer} />
+                    <Route  path="/login" component={Login} />
                     
-                    <Route  path="/register" component={RegisterContainer} />
+                    <Route  path="/register" component={Register} />
                     
                      
                     
             
                 
-                    <Route  path="/kitchens" component={KitchensContainer}/>                
+                    <Route  path="/kitchens" component={Kitchens}/>                
                     <Route  path="/kitchen/:id/:name" component={ItemsContainer}/>
                     
                     
