@@ -15,9 +15,15 @@ import plates from '../reducers/plates'
 
 import { routerReducer } from 'react-router-redux';
 
+import { persistStore, persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
+import storageSession from 'redux-persist/lib/storage/session';
+
+import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'; 
+
 const reducers = combineReducers({ user, cart, kitchens, plates });
 
-const defaultState = {
+/*const defaultState = {
     user: {
         isLoggedIn : false,
         details: { }
@@ -25,7 +31,16 @@ const defaultState = {
     cart: 0,
     kitchens:[],
     plates:[] 
-}
+}*/
+
+
+
+const persistConfig = {
+ key: 'root',
+ storage: storageSession, 
+};
+
+const pReducer = persistReducer(persistConfig, reducers);
 
 
 export const history = createHistory();
@@ -35,8 +50,11 @@ const myRouterMiddleware = routerMiddleware( history );
 
 const getMiddleware = _ =>  applyMiddleware( myRouterMiddleware, logger, saver, auth, createLogger(), handlerMiddleware )
 
-const state = localStorage['redux-storee'] ? JSON.parse(localStorage['redux-storee']) : defaultState ;
+//const state = localStorage['redux-storee'] ? JSON.parse(localStorage['redux-storee']) : defaultState ;
 
 const createStoreWithMiddleware =  composeWithDevTools( getMiddleware() )( createStore );
 
-export default ( initialState = defaultState ) => createStoreWithMiddleware(reducers, state)
+//export default ( initialState = defaultState ) => createStoreWithMiddleware(reducers, state)
+export const store = createStoreWithMiddleware(pReducer)
+export const persistor = persistStore(store);
+ 
