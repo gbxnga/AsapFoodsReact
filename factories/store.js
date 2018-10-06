@@ -15,6 +15,11 @@ import plates from '../reducers/plates'
 
 import { routerReducer } from 'react-router-redux';
 
+import { persistStore, persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
+
+import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'; 
+
 const reducers = combineReducers({ user, cart, kitchens, plates });
 
 const defaultState = {
@@ -28,6 +33,16 @@ const defaultState = {
 }
 
 
+
+const persistConfig = {
+ key: 'root',
+ storage: storage,
+ stateReconciler: autoMergeLevel2 // see "Merge Process" section for details.
+};
+
+const pReducer = persistReducer(persistConfig, reducers);
+
+
 export const history = createHistory();
 
 // Build the middleware for intercepting and dispatching navigation actions
@@ -39,4 +54,6 @@ const state = localStorage['redux-storee'] ? JSON.parse(localStorage['redux-stor
 
 const createStoreWithMiddleware =  composeWithDevTools( getMiddleware() )( createStore );
 
-export default ( initialState = defaultState ) => createStoreWithMiddleware(reducers, state)
+//export default ( initialState = defaultState ) => createStoreWithMiddleware(reducers, state)
+export const store = createStoreWithMiddleware(pReducer)
+export const persistor = persistStore(store);

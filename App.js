@@ -3,6 +3,7 @@ import {render} from 'react-dom'
 import PropTypes from 'prop-types'
 
 import { HashRouter, Route, Switch, NavLink, browserHistory, Redirect,withRouter } from 'react-router-dom'
+import { PersistGate } from 'redux-persist/lib/integration/react';
 import { BrowserRouter } from 'react-router-dom';
 
 import 'jquery/src/jquery';
@@ -36,13 +37,14 @@ import { connect, Provider } from 'react-redux'
 import user from './reducers/user'
 
 
-import storeFactory from './factories/store'
+//import storeFactory from './factories/store'
 import {
     CREATE_PLATE_API,
 } from './constants/api'
   
 //export default storeFactory
-const store = storeFactory(true)
+//const store = storeFactory(true)
+import {persistor, store} from './factories/store' 
 
 
 class App extends React.Component {
@@ -78,6 +80,8 @@ class App extends React.Component {
 
     render() {
         const { user } = store.getState()
+        console.log('APP STATE ')
+        console.log(store.getState())
         
         
         if (!user.isLoggedIn && !this.props.location.pathname.endsWith('/login') && !this.props.location.pathname.endsWith('/register')) {
@@ -135,14 +139,17 @@ class App extends React.Component {
 App.propTypes = {
     store: PropTypes.object.isRequired
 }
-
+const LoadingView = ({}) => 
+<div>Loading</div>
 const AppContainer = withRouter(props => <App {...props}/>);
 console.log(store.getState())
 render (
     
     <BrowserRouter>
         <Provider store={store}>
+            <PersistGate loading={<LoadingView />} persistor={persistor}>
             <AppContainer store={store} />
+            </PersistGate>
         </Provider>
     </BrowserRouter>
     
