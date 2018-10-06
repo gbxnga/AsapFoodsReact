@@ -1,6 +1,7 @@
 import toast from '../../modules/toast'
 const CheckoutInfo = ({delivery_charge=0, grand_total=0, sub_total=0,user={}, processOrder=f=>f, verifyCoupone=f=>f, _updateAreaCharge=f=>f}) =>{
 
+    // has to manage its own state from this point 
     let _name, _phone, _address
 
     const handleProcessOrder = e =>{

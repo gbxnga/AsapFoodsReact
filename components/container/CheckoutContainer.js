@@ -40,7 +40,7 @@ class CheckoutContainer extends React.Component
         this.submitOrder = this.submitOrder.bind(this)
         this.verifyCoupone = this.verifyCoupone.bind(this)
         this._updateAreaCharge = this._updateAreaCharge.bind(this)
-        console.log(this.state)
+        console.log( this.state )
     }
     async componentDidMount()
     {       
@@ -354,11 +354,6 @@ class CheckoutContainer extends React.Component
     }
 
 }
-/*CheckoutContainer.contextTypes = {
-    store: PropTypes.object,
-    openNav: PropTypes.func,
-    closeNav: PropTypes.func
-}*/
 
 const mapStateToProps = state => {
     return {
@@ -385,5 +380,3 @@ const mapDispatchToProps = dispatch => ({
     }
 })
 export default connect( mapStateToProps, mapDispatchToProps )( CheckoutContainer )
-
-//module.exports = CheckoutContainer;

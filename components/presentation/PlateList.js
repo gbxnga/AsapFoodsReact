@@ -30,6 +30,11 @@ class PlateList extends React.Component {
         }
     }
 
+    componentDidMount(){
+
+        // fetch its own data
+    }
+
     async _deletePlate(plateId){
 
         this.setState({deletingPlates: [ ...this.state.deletingPlates, plateId ] })

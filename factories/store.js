@@ -1,6 +1,7 @@
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import { createLogger } from 'redux-logger';
+ 
 
 import { routerMiddleware } from 'react-router-redux';
 import createHistory from 'history/createBrowserHistory';
@@ -25,6 +26,7 @@ const defaultState = {
     kitchens:[],
     plates:[] 
 }
+
 
 export const history = createHistory();
 
