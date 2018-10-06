@@ -5,7 +5,7 @@ import {
     DELETED_PLATE,
     ADD_PLATE
 }from '../constants'
-export default (state = {}, action) => {
+export default (state = [], action) => {
     switch (action.type) {
         case ADD_PLATE:
             return  [ ...state,  action.plate ]

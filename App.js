@@ -79,9 +79,7 @@ class App extends React.Component {
 
 
     render() {
-        const { user } = store.getState()
-        console.log('APP STATE ')
-        console.log(store.getState())
+        const { user } = store.getState() 
         
         
         if (!user.isLoggedIn && !this.props.location.pathname.endsWith('/login') && !this.props.location.pathname.endsWith('/register')) {
@@ -141,15 +139,20 @@ App.propTypes = {
 }
 const LoadingView = ({}) => 
 <div>Loading</div>
-const AppContainer = withRouter(props => <App {...props}/>);
+const AppWithRouter = withRouter(props => <App {...props}/>);
 console.log(store.getState())
+/**
+ * PersistGate is a PureComponent, so children doesn't rerender, 
+ * when location changed with react-router-dom
+ */
+const PersistGateWithRouter = withRouter(PersistGate);
 render (
     
     <BrowserRouter>
         <Provider store={store}>
-            <PersistGate loading={<LoadingView />} persistor={persistor}>
-            <AppContainer store={store} />
-            </PersistGate>
+            <PersistGateWithRouter loading={<LoadingView />} persistor={persistor}>
+                <AppWithRouter store={store} />
+            </PersistGateWithRouter>
         </Provider>
     </BrowserRouter>
     

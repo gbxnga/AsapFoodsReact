@@ -9,10 +9,7 @@ const mapStateToProps = state => {
     return {
         plates: state.plates 
     }
-}
-const mapDispatchToProps = dispatch => ({
-
-})
+} 
 class Header extends React.Component {
 
 
@@ -53,4 +50,4 @@ class Header extends React.Component {
 }
 
 
-export default connect( mapStateToProps, mapDispatchToProps )( Header )
+export default connect( mapStateToProps )( Header )

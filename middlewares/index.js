@@ -1,6 +1,7 @@
 
 
-import browserHistory from 'history';
+//import browserHistory from 'history';
+import {browserHistory} from "react-router";
 import { push } from 'redux-little-router'
 import createHandlerMiddleware from 'redux-handler-middleware';
 //import {FETCH_POST_FAILURE, FETCH_POSTS_FAILURE} from 'constants/blog';
@@ -41,8 +42,11 @@ export const auth = store => next => action => {
     }
     else
     {
+        console.log(action.type)
+
         console.log(store)
         console.log('You are logged in')
+        //browserHistory.push("/path-to-link");
     }
     result = next(action)
 }
