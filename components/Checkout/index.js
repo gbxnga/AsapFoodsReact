@@ -1,83 +1,74 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-
-import ComponentWithHeader from '../componentWithHeader'
- 
-import PlateList from '../presentation/PlateList'
-import CheckoutInfo from '../presentation/CheckoutInfo'
-import ErrorPage from '../presentation/ErrorPage'
-
-import getPlates from '../../actions/getPlates'
-
-import { plates, user } from '../../reducers/';
-import C from '../../constants/constants'
-
+import React from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import axios from "axios";
 
-import {NavLink, Redirect} from 'react-router-dom'
-import toast from '../../modules/toast'
+import ComponentWithHeader from '../componentWithHeader';
 
-class CheckoutContainer extends React.Component
-{
-    constructor(props)
-    {
-        super(props)
-        
+import PlateList from '../presentation/PlateList';
+import CheckoutInfo from '../presentation/CheckoutInfo';
+import ErrorPage from '../presentation/ErrorPage';
+
+import getPlates from '../../actions/getPlates';
+
+import NavComponent from '../NavComponent';
+import Header from '../presentation/Header';
+
+import C from '../../constants/constants';
+
+import {NavLink, Redirect} from 'react-router-dom';
+import toast from '../../modules/toast';
+
+class CheckoutContainer extends React.Component {
+    constructor(props) {
+        super(props);
         this.state = {
             showThankYou: false,
             plates: this.props.plates,
-            total_amount: 0, 
+            total_amount: 0,
             payment_method: 'Offline',
-            loading:true,
-            plates:[],
-            area_charge: 150
-        }
-        this.props = this.props
-        this.displayThankYou = this.displayThankYou.bind(this)
-        this.payWithPaystack = this.payWithPaystack.bind(this)
-        this.processOrder = this.processOrder.bind(this)
-        this.submitOrder = this.submitOrder.bind(this)
-        this.verifyCoupone = this.verifyCoupone.bind(this)
-        this._updateAreaCharge = this._updateAreaCharge.bind(this)
-        console.log( this.state )
+            loading: true,
+            plates: [],
+            area_charge: 150,
+        };
+        this.displayThankYou = this.displayThankYou.bind(this);
+        this.payWithPaystack = this.payWithPaystack.bind(this);
+        this.processOrder = this.processOrder.bind(this);
+        this.submitOrder = this.submitOrder.bind(this);
+        this.verifyCoupone = this.verifyCoupone.bind(this);
+        this._updateAreaCharge = this._updateAreaCharge.bind(this);
+        console.log(this.state);
     }
-    async componentDidMount()
-    {       
+
+    async componentDidMount() {
         // if kitchens list has not been loaded to app state
         // call getKitchens action
-        
-        const { plates, user, getPlates } = this.props
-        const { auth_token } = user.details
-    
+        const { plates, user, getPlates } = this.props;
+        const { auth_token } = user.details;
+
         try {
+            const plates = await getPlates(auth_token);
 
-            const plates = await getPlates(auth_token)
+            console.table(plates);
 
-            console.table(plates)
-        
             this.setState({
-                 
+
                 loading:false
-            })
+            });
+        } catch (error) {
+            console.error(error);
+            this.setState({ loading: false });
         }
-        catch (error){
-            console.error(error)
-            this.setState({loading:false})
-        }
-        
-        
     }
-    
-    displayThankYou(){
-        this.setState({showThankYou:true, plates:[]});       
+
+    displayThankYou() {
+        this.setState({ showThankYou: true, plates: [] });
     }
+
     processOrder() {
-        
-           
-            const {user} = this.context.store.getState()
-            let token = user.details.auth_token
-        
+            const {user} = this.props;
+            const token = user.details.auth_token;
+
         if ($('#cb3').is(':checked')) {
             $('#place-order-btn').attr("disabled", "disabled").html('<i class="fa fa-spinner fa-spin fa-1x fa-fw"></i><span class="sr-only">Loading...</span>');
                
@@ -264,40 +255,7 @@ class CheckoutContainer extends React.Component
         
         return(
             (showThankYou) ? 
-            <div className="thank-you-page page-container" id=" " className="col-md-12" style={{marginTop:100, diplay:"block"}}>
-
-            <div id="thank-you-page-banner ">
-                <img width="150" height="150" className="center-block " src="src/icons/thankyou.png" />
-                <h2 className="text-center ">Thank you!</h2>
-                <p className="text-center ">Your order is confirmed and on the way</p>
-            </div>
-
-            <div id="processed-order-details " className="center-block " style={{width:"90%",height:"auto"}}>
-                <div style={{backgroundColor:"white"}} className="table ">
-                    <div className="table-row ">
-                        <div className="table-col right ">
-                            <strong>Order No</strong>
-                        </div>
-                        <div className="table-col left" id="thank-you-order-id">{this.state.order_number}</div>
-
-                    </div>
-                    <div className="table-row ">
-                        <div className="table-col right ">Total Amount</div>
-                        <div className="table-col left" id="thank-you-total">&#8358;{this.state.total_amount}</div>
-                    </div>
-                    <div className="table-row ">
-                        <div className="table-col right "></div>
-                        <div className="table-col left "></div>
-                    </div>
-                    <div className="table-row ">
-                        <div className="table-col right ">Payment Method</div>
-                        <div className="table-col left" id="thank-you-method">{this.state.payment_method}</div>
-                    </div>
-                </div>
-            </div>
-            <NavLink to={`view-order/${this.state.order_number}`} id="thank-you-view-order" className="text-center center-block">View order</NavLink>
-            <NavLink className="landing-page-btn center-block text-center " style={{backgroundColor:"#FF4C00",clear:"both"}} id="email-login-btn " to="./">FINISH</NavLink>
-            </div>
+            <ThankYou order_number={this.props.order_number} total_amount={this.props.total_amount} payment_method={this.state.payment_method} />
         : (loading) ?
         
             <ComponentWithHeader 
@@ -325,12 +283,10 @@ class CheckoutContainer extends React.Component
 
         :
 
-            <ComponentWithHeader 
-                headerProps={{
-                    title:"Checkout",
-                    showBack:false   
-                }}
-                Component={ _ =>  
+        <div>
+
+                <NavComponent />
+                <Header title="Checkout" showBack={false} />
                 
                 <div style={{ paddingBottom: 75,display: "block" }} className="checkout-page page-container">
                     <div className="container">
@@ -347,8 +303,8 @@ class CheckoutContainer extends React.Component
                             </div>
                         </div>
                     </div>
-                </div> }
-        />
+                </div> 
+        </div>
 
         )
     }

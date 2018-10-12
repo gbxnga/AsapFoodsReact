@@ -15,7 +15,7 @@ class ComponentWithHeader extends React.Component {
             <div>
                 <NavComponent />
                 <Header {...headerProps} />
-                <Component/>
+                <Component {...this.props}/>
             </div>
         )
     }

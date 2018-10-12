@@ -14,7 +14,7 @@ module.exports = {
         rules: [
             {
                 loader: 'babel-loader',
-                test: /\.js$/,
+                test: /\.(js|jsx)$/,
                 exclude: /node_modules/
             },
             {
@@ -23,6 +23,9 @@ module.exports = {
             },
             { test: /\.(png|woff|woff2|eot|ttf|svg|jpg)$/, loader: 'url-loader?limit=100000' }
         ]
+    },
+    resolve: {
+        extensions: [ '.js', '.jsx'],
     },
     /*devServer: {
         port: 7090

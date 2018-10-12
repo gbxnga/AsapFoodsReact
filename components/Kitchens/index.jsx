@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 
@@ -8,7 +7,6 @@ import ComponentWithHeader from '../componentWithHeader';
 
 
 import getKitchens from '../../actions/getKitchens';
-import { kitchens, user, plates } from '../../reducers';
 
 const mapStateToProps = (state) => {
   return {
@@ -35,17 +33,17 @@ class KitchensContainer extends React.Component {
     async componentDidMount() {
         // if kitchens list has not been loaded to store
         // call getKitchens action
-        const { kitchens, plates } = this.props;
+        const { kitchens } = this.props;
         console.log('KITCHEN PROPS');
         console.log(this.props);
         if (kitchens.length < 1) {
             const { getKitchens, user } = this.props;
-            const { auth_token } = user.details;
+            const { auth_token: authToken } = user.details;
 
             // the state should be reset after the kitchens
             // list is feched from the sever and the store updated
             try {
-                const kitchens = await getKitchens(auth_token);
+                const kitchens = await getKitchens(authToken);
 
                 console.table(kitchens);
                 this.setState({ kitchens, loading: false });
@@ -59,22 +57,26 @@ class KitchensContainer extends React.Component {
     render() {
         const { kitchens, loading } = this.state;
         return (
-            <div>
-                
-                <ComponentWithHeader 
-                    headerProps={{
-                        title:"Pick kitchen",
-                        showBack:false   
+          <div>
+            <ComponentWithHeader
+              headerProps={{
+                        title: "Pick kitchen",
+                        showBack: false,
                     }}
-                    Component={ () => loading ? 
-                        <div id="load" style={{backgroundColor:"transparent",opacity:0.9}}>
-                                <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
-                            
-                        </div>
-                        :
-                        <KitchensList kitchens={kitchens}/>}
-                />
-            </div>
+              Component={() => loading
+                ? (
+                  <div id="load" style={{ backgroundColor: "transparent", opacity: 0.9 }}>
+                    <div className="lds-ellipsis">
+                      <div />
+                      <div />
+                      <div />
+                      <div />
+                    </div>
+                  </div>
+                )
+                : <KitchensList kitchens={kitchens} />}
+            />
+          </div>
         );
     }
 }

@@ -8,7 +8,9 @@
     "rules": {
         "indent":"off",
         "no-shadow":"off",
-        "no-console":"off"
+        "no-console":"off" ,
+        "quotes":"off",
+        "no-confusing-arrow":"off"
         
     
     }
