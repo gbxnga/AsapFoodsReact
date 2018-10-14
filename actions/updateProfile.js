@@ -48,12 +48,15 @@ const updateProfile = (id, fullname, password, phone, email, address,auth_token,
             dispatch({
                 type: C.UPDATE_PROFILE_FAILED
             })
+
+            throw new Error('Failed')
             
             toast(`${json.data.message}`)
             
         }
         $("#submit_edit_profile").removeAttr("disabled").html('UPDATE PROFILE');
       })
+      
       .catch((error) => {
         toast('An Error occured!')
           console.log(`${formData} ${error}`)

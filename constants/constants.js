@@ -14,13 +14,17 @@ const constants = {
     GET_KITCHENS_LIST:"GET_KITCHENS_LIST",
     GET_PLATES_LIST:"GET_PLATES_LIST",
     GET_PLATES_LIST_FAILED:"GET_PLATES_LIST_FAILED",
-    DELETE_PLATE: "DELETE_PLATE",
+    DELETED_PLATE: "DELETED_PLATE",
+    DELETING_PLATE: "DELETING_PLATE",
     DELETE_PLATE_FAILED: "DELETE_PLATE_FAILED",
     LOGOUT_USER_SUCCESSFUL: "LOGOUT_USER_SUCCESSFUL",
     LOGOUT_USER_FAILED: "LOGOUT_USER_FAILED",
     UPDATE_PROFILE_SUCCESSFUL: "UPDATE_PROFILE_SUCCESSFUL",
     UPDATE_PROFILE_FAILED: "UPDATE_PROFILE_FAILED",
     CLEAR_PLATE: "CLEAR_PLATE",
+    CREATE_PLATE: "CREATE_PLATE",
+    CREATE_PLATE_FAILED: "CREATE_PLATE_FAILED",
+    ADD_PLATE:"ADD_PLATE",
     INCREMENT_ORDERS:"INCREMENT_ORDERS",
     GET_KITCHENS_API: `${url}/api/kitchens`,
     LOGIN_USER_API: `${url}/api/user/login`,
@@ -34,6 +38,8 @@ const constants = {
     GET_PLATES_API: `${url}/api/checkout/plates`,
     DELETE_PLATE_API: `${url}/api/plate`,
     GET_ORDERS_API: `${url}/api/user/orders`,
-    GET_ORDER_API:`${url}/api/user/order`
+    GET_ORDER_API:`${url}/api/user/order`,
+    VALIDATE_PHONE_NUMBER_API:`${url}/api/user/send-validation-code`,
+    VALIDATE_SENT_CODE_API:`${url}/api/user/verify-sent-code`,
 }
 export default constants

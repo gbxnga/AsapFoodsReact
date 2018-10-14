@@ -1,33 +1,60 @@
-import { createStore, combineReducers, applyMiddleware, compose } from 'redux'
+import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
+import { createLogger } from 'redux-logger';
+ 
 
-import logger from '../middlewares/logger'
-import saver from '../middlewares/saver'
-import auth from '../middlewares/auth'
+import { routerMiddleware } from 'react-router-redux';
+import createHistory from 'history/createBrowserHistory';
+
+import { logger, saver, auth, handlerMiddleware } from '../middlewares'
+
 import user from '../reducers/user'
 import cart from '../reducers/cart'
 import kitchens from '../reducers/kitchens'
 import plates from '../reducers/plates'
 
-const state = {
+import { routerReducer } from 'react-router-redux';
+
+import { persistStore, persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
+import storageSession from 'redux-persist/lib/storage/session';
+
+import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'; 
+
+const reducers = combineReducers({ user, cart, kitchens, plates });
+
+/*const defaultState = {
     user: {
         isLoggedIn : false,
-        details: {
-
-        }
+        details: { }
     },
     cart: 0,
     kitchens:[],
-    plates:[]
-}
-const storeFactory = (initialState=state) =>
-
-    applyMiddleware(logger, saver, auth)(createStore)(
-        combineReducers({user,cart,kitchens,plates}),
-        (localStorage['redux-store']) ?
-            JSON.parse(localStorage['redux-store']) :
-            state
-    )
+    plates:[] 
+}*/
 
 
-module.exports = storeFactory;
+
+const persistConfig = {
+ key: 'root',
+ storage: storageSession, 
+};
+
+const pReducer = persistReducer(persistConfig, reducers);
+
+
+export const history = createHistory();
+
+// Build the middleware for intercepting and dispatching navigation actions
+const myRouterMiddleware = routerMiddleware( history );
+
+const getMiddleware = _ =>  applyMiddleware( myRouterMiddleware, logger, saver, auth, createLogger(), handlerMiddleware )
+
+//const state = localStorage['redux-storee'] ? JSON.parse(localStorage['redux-storee']) : defaultState ;
+
+const createStoreWithMiddleware =  composeWithDevTools( getMiddleware() )( createStore );
+
+//export default ( initialState = defaultState ) => createStoreWithMiddleware(reducers, state)
+export const store = createStoreWithMiddleware(pReducer)
+export const persistor = persistStore(store);
+ 

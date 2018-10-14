@@ -1,0 +1,17 @@
+{
+    "extends": "airbnb",
+    "env": {
+    "node": true,
+    "es6": true,
+    "browser": true
+    },
+    "rules": {
+        "indent":"off",
+        "no-shadow":"off",
+        "no-console":"off" ,
+        "quotes":"off",
+        "no-confusing-arrow":"off"
+        
+    
+    }
+}

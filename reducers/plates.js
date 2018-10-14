@@ -1,20 +1,27 @@
-import C from '../constants/constants'
-const plates = (state = {}, action) => {
+import {
+    GET_PLATES_LIST,
+    GET_PLATES_LIST_FAILED,
+    CLEAR_PLATE,
+    DELETED_PLATE,
+    ADD_PLATE
+}from '../constants'
+export default (state = [], action) => {
     switch (action.type) {
-        case C.GET_PLATES_LIST:
+        case ADD_PLATE:
+            return  [ ...state,  action.plate ]
+            
+        case GET_PLATES_LIST:
             return action.plates 
-        case C.GET_PLATES_LIST_FAILED:
+        case GET_PLATES_LIST_FAILED:
             return [] 
-        case C.CLEAR_PLATE:
+        case CLEAR_PLATE:
             return []   
-        case C.DELETE_PLATE:
-        console.log(`Action.id: ${action.id}`)
+        case DELETED_PLATE:
             return state.filter(
                 plate => plate.id != action.id
-            )  
+            ) 
         default :
             return state
     }
 }
-module.exports = plates;
 

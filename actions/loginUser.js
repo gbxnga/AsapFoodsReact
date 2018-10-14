@@ -1,52 +1,51 @@
-import C from '../constants/constants'
-import toast from '../modules/toast'
+import {
+    LOGIN_USER_SUCCESSFUL,
+    LOGIN_USER_FAILED
+} from '../constants'
+import {
+    LOGIN_USER_API,
+} from '../constants/api'
+
 import axios from "axios";
-const loginUser = (email, password, dispatch) =>{
-    $('#login-form button').attr("disabled", "disabled").html('<i class="fa fa-spinner fa-spin fa-1x fa-fw"></i><span class="sr-only">Loading...</span>');
 
-        
-    var formData = new FormData();
-    formData.append("email", email);
-    formData.append("password", password);
+import createHistory from 'history/createBrowserHistory';
+const history = createHistory();
 
-    axios.get(`${C.LOGIN_USER_API}/${email}/${password}`)
+export default (email, password, dispatch) =>{
+
+    return axios.get(`${LOGIN_USER_API}/${email}/${password}`) 
       .then(response => {
         console.log(response)
-        return response
-      })
-      .then(json => {
-        if (json.data.success)
+        console.table(response.data.data)
+        
+        const { success, data } = response.data
+        if ( success )
         {
+            let { password, name, address, phone, id, email, auth_token, auth_type, orders, oauth_provider } = response.data.data
             dispatch({
-                type: C.LOGIN_USER_SUCCESSFUL,
-                //username: json.data.data.username,
-                password: json.data.data.password,
-                name: json.data.data.name,
-                address: json.data.data.address,
-                phone: json.data.data.phone,
-                id : json.data.data.id,
-                email: json.data.data.email,
-                auth_token: json.data.data.auth_token,
-                auth_type: json.data.data.oauth_provider,
-                orders:json.data.data.orders,
+                type: LOGIN_USER_SUCCESSFUL,
+                password,
+                name: data.fullname,
+                address,
+                phone,
+                id,
+                email,
+                auth_token,
+                auth_type: oauth_provider ,
+                orders,
                 timestamp: new Date().toString()
             })
-            toast(`${json.data.message}`)
+            
         }
         else
         {
             dispatch({
-                type: C.LOGIN_USER_FAILED
+                type: LOGIN_USER_FAILED
             })
-            toast(`${json.data.message}`)
+            
         }
-        $("#login-form button").removeAttr("disabled").html('Login');
+        return success
+        
       })
-      .catch((error) => {
-        toast('An Error Occured!')
-          console.log(`${C.LOGIN_USER_API}/${email}/${password} ${error}`)
-          $("#login-form button").removeAttr("disabled").html('Login');
-      });
 
 }
-module.exports = loginUser;

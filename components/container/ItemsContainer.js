@@ -1,23 +1,41 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React from 'react';
+import PropTypes from 'prop-types';
 
-import NavComponent from '../NavComponent'
-import Header from '../presentation/Header'
-import KitchenItems from '../presentation/KitchenItems'
+import NavComponent from '../NavComponent';
+import Header from '../presentation/Header';
+import KitchenItems from '../presentation/KitchenItems';
+import ComponentWithHeader from '../componentWithHeader';
 
 import toast from '../../modules/toast'
 import axios from "axios";
 import C from '../../constants/constants'
 import ErrorPage from '../presentation/ErrorPage'
+import { connect } from 'react-redux'
 
 const KEYS_TO_FILTERS = ['name'];
 
+import createPlate from '../../actions/createPlate'
+import { kitchens, user, plates } from '../../reducers'
+
+const mapStateToProps = state => {
+    return {
+      kitchens: state.kitchens,
+      user: state.user,
+      plates: state.plates,
+      
+    }
+};
+const mapDispatchToProps = dispatch => ({
+    createPlate(auth_token, items, kitchenId) {
+        return createPlate(auth_token, items, kitchenId, dispatch)
+    }
+})
 
 class ItemsContainer extends React.Component
 {
-    constructor(props)
+    constructor( props )
     {
-        super(props)
+        super( props )
 
         const { params } = this.props.match
 
@@ -31,16 +49,18 @@ class ItemsContainer extends React.Component
             category:'All',
             kitchenId: params ? params.id : null,
             kitchenName: params ? params.name : null,
+            creatingPlate: false
         } 
         this._searchUpdated = this._searchUpdated.bind(this)  
         this._incrementItem = this._incrementItem.bind(this)  
         this._createPlate = this._createPlate.bind(this)   
         this._filterItemsBy = this._filterItemsBy.bind(this)
     }
-    componentWillMount()
+    
+    componentDidMount()
     {
         
-        const {user} = this.context.store.getState()
+        const {user, plates} = this.props 
     
         axios.get(`${C.KITCHEN_DETAILS_API}/${this.props.match.params.id}/${this.props.match.params.name}?token=${user.details.auth_token}`)
           .then(response => {
@@ -50,21 +70,18 @@ class ItemsContainer extends React.Component
           .then(json => {
             if (json.data.success)
             {
-                let myObj = json.data.data
+                const {data} = json.data
                 
-                let array = $.map(myObj, function(value, index) {
+                const items = $.map(data, function(value, index) {
                     return [value];
                 });
-                let kitchen = json.data.kitchen
-                let items = array
-                this.setState({kitchen:kitchen, items:items, loading:false})
+                const {kitchen} = json.data
+                
+                this.setState({kitchen, items, loading:false})
             }
             else
             {
-                this.setState({kitchens:[],loading:false, kitchenName:this.props.match.params.name})
-                
-                console.log('kitchens empty')
-                //this.state.kitchens = []                
+                this.setState({kitchens:[],loading:false, kitchenName:this.props.match.params.name})                
             }
           })
           .catch((error) => {
@@ -123,60 +140,60 @@ class ItemsContainer extends React.Component
             searchTerm: term
         })
     }
-    _createPlate() {
-        //this.setState({loading: true})
-        $('#create-plate-form button').attr("disabled", "disabled").html('<i class="fa fa-spinner fa-spin fa-1x fa-fw"></i><span class="sr-only">Loading...</span>');
-        let formData = new FormData();
-        const { user } = this.context.store.getState()
 
-        formData.append("token", user.details.auth_token);
-        formData.append("kitchen_id", this.state.kitchenId)
-        //formData.append("kitchen_id", 4)
+    async _createPlate() {
 
-        //let array = $('#create-plate-form').serializeArray()
+        this.setState({creatingPlate:true})
+        const { createPlate, user } = this.props
+        const { auth_token } = user.details
+        const items = this.state.selectedItems
+        const { kitchenId } = this.state
+        
+        
+        try {
 
-        this.state.selectedItems.map((item) => {console.log(item);formData.append(item.id, item.quantity)})
+            const status = await createPlate (auth_token, items, kitchenId)
 
-        console.log(this.state.selectedItems)
-        console.log(user)
-
-        axios.post(`${C.CREATE_PLATE_API}?token=${user.details.auth_token}`, formData)
-            .then(response => {
-                console.log(response)
-                return response
-            })
-            .then(json => {
-                if (json.data.success) {
-                    toast('Items added!')
-                    this.props.history.push('../../checkout')
-                } else {
-                    toast('Failed to add items')
-                }
-                $("#create-plate-form button").removeAttr("disabled").html('<span class="glyphicon glyphicon-plus"></span> Add Items to Plate');
-            })
-            .catch((error) => {
-                console.log(` ${error}`)
-                $("#create-plate-form button").removeAttr("disabled").html('<span class="glyphicon glyphicon-plus"></span> Add Items to Plate');
-            });
+            if(status){
+                toast('Items added!')
+                this.props.history.push('../../checkout')
+            }
+            else 
+            {
+                toast('Failed to add items')
+            }
+            this.setState({creatingPlate:false})
+            
+            
+        }
+        catch (error){
+            console.error(error)
+            toast('Failed to add items')
+            this.setState({creatingPlate:false})
+            
+          
+        }
     }
     
-    componentDidMount()
-    {
-        const {plates} = this.context.store.getState()
-        $('header #right').attr('data-content', `${plates.length}`);
-    }
-    render(){
-        const {kitchen, items, loading, searchTerm, category, selectedItems, kitchens} = this.state
-        const {openNav, closeNav, createPlate} = this.context
 
-        if (kitchens === undefined || kitchens.length == 0) {
+    render(){
+        const {kitchen, items, loading, searchTerm, category, selectedItems, kitchens, creatingPlate} = this.state
+
+
+        if (kitchens === undefined || kitchens.length < 1) {
             // array empty or does not exist
 
             return (
-                <div>
-                <NavComponent closeNav={closeNav}/>
-                <Header title="Add Items" openNav={openNav}/>
-                <ErrorPage message="Sorry! No Item in Kitchen"/>
+                <div>                   
+                    <ComponentWithHeader
+                    
+                        headerProps={{
+                            title:"Add Items",
+                            showBack:true
+        
+                        }} 
+                        Component={ _ => <ErrorPage message="Sorry! No Item in Kitchen"/> }
+                    />
                 </div>
             )
         }
@@ -184,46 +201,52 @@ class ItemsContainer extends React.Component
            
             if (item.food.toLowerCase().includes(searchTerm.toLowerCase()) && (category == 'All' || category.toLowerCase() == item.category.toLowerCase())) return true
         })
+
         return(
-            
 
-
-            
             <div>
-            
-            <NavComponent closeNav={closeNav}/>
-            <Header showBack={true}  title='Add Items' openNav={openNav}/>
-            {(loading) ? 
-            <div id="load" style={{backgroundColor:"transparent",opacity:0.9}}>
-                    <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+
+            <ComponentWithHeader 
                 
-            </div>
-            :
-            (items.length == 0) ?         
-            <ErrorPage message="Sorry! No Item"/> : <KitchenItems _createPlate={this._createPlate} 
-                                                                  _searchUpdated={this._searchUpdated} 
-                                                                  filterItem={this.filterItem} 
-                                                                  filter={this.filter} 
-                                                                  createPlate={createPlate} 
-                                                                  kitchen={kitchen} 
-                                                                  items={filteredItems}
-                                                                  _incrementItem={this._incrementItem}
-                                                                  selectedItems={selectedItems}
-                                                                  _filterItemsBy={this._filterItemsBy}
-                                                                  category={category}
-                                                    />
-            }
-            
+                headerProps={{
+                    title:"Add Items",
+                    showBack:true
+
+                }}
+                Component={ _ => loading ? 
+                    <div id="load" style={{backgroundColor:"transparent",opacity:0.9}}>
+
+                            <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+                        
+                    </div>
+                    :
+                    (items.length < 1) ?  
+
+                    <ErrorPage message="Sorry! No Item"/> 
+                    
+                    : 
+                    
+                    <KitchenItems 
+                        _createPlate={this._createPlate} 
+                        _searchUpdated={this._searchUpdated} 
+                        filterItem={this.filterItem} 
+                        filter={this.filter} 
+                        createPlate={createPlate} 
+                        kitchen={kitchen} 
+                        items={filteredItems}
+                        _incrementItem={this._incrementItem}
+                        selectedItems={selectedItems}
+                        _filterItemsBy={this._filterItemsBy}
+                        category={category}
+                        loading={creatingPlate}
+                    />
+                    }
+            />
+
             </div>
         )
     }
 
 }
-ItemsContainer.contextTypes = {
-    store: PropTypes.object,
-    openNav: PropTypes.func,
-    closeNav: PropTypes.func,
-    createPlate: PropTypes.func
-}
 
-module.exports = ItemsContainer;
+export default connect( mapStateToProps, mapDispatchToProps )( ItemsContainer )

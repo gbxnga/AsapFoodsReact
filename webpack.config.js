@@ -3,10 +3,10 @@ var path = require('path');
 const dist = 'dist'
 //const workboxPlugin = require('workbox-webpack-plugin');
 module.exports = {
-    entry: './app/main.js',
-    //entry: './index-client.js',
+    entry: ["babel-polyfill", './App.js'],
+    //entry: './index-client.js', 
     output: {
-       path: path.resolve(__dirname,""),
+       path: path.resolve(__dirname, dist),
         //path: path.join(dist,"/assets/js/"),
         filename: 'bundle.js'
     },
@@ -14,7 +14,7 @@ module.exports = {
         rules: [
             {
                 loader: 'babel-loader',
-                test: /\.js$/,
+                test: /\.(js|jsx)$/,
                 exclude: /node_modules/
             },
             {
@@ -23,6 +23,9 @@ module.exports = {
             },
             { test: /\.(png|woff|woff2|eot|ttf|svg|jpg)$/, loader: 'url-loader?limit=100000' }
         ]
+    },
+    resolve: {
+        extensions: [ '.js', '.jsx'],
     },
     /*devServer: {
         port: 7090

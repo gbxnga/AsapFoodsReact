@@ -7,6 +7,20 @@ import PropTypes from 'prop-types'
 import PushComponent from './PushComponent'
 import constants from '../constants/constants';
 
+
+const mapStateToProps = state => {
+    return {
+        
+      user: state.user
+      
+    }
+};
+const mapDispatchToProps = dispatch => ({
+    logoutUser() {
+        return logoutUser(dispatch)
+    }
+})
+
 class NavComponent extends React.Component {
     constructor(props) {
         super(props)
@@ -33,15 +47,25 @@ class NavComponent extends React.Component {
     componentWillReceiveProps(nextProps) {
         this.setState({hidden: nextProps.hide})
     }
+
+    closeNav(done=f=>f){
+        $('#cover').hide();
+        $('#mySidenav').animate({
+            "margin-left": "-80%"
+        }, 10);
+        done();
+
+    }
     
     render(){
         const {hidden} = this.state
-        const {closeNav} = this.context
+        
         const {logoutUser} = this.props
-        const {user} = this.context.store.getState()
+        const {user} = this.props
+        
     return(
         <div>
-        <div onClick={()=>closeNav()} id="cover" style={{display:"none"}}>
+        <div onClick={()=>this.closeNav()} id="cover" style={{display:"none"}}>
 
         </div>
         <div id="load" style={{display:"none"}}>
@@ -56,7 +80,7 @@ class NavComponent extends React.Component {
     
             <div style={{color:"white",height: 150,width:"100%",padding:"10px 30px"}}>
                 <img src={`${constants.site}/src/icons/profile5.png`} width="50" height="50" style={{borderRadius:30,float: "left",clear: "right",marginRight: 10,marginTop:  20}} />
-                <span style={{float: "left",clear:"both", marginTop:15}} className="customerName text-center">{user.details.name}</span>
+                <span style={{float: "left",clear:"both", marginTop:15}} className="customerName text-center">{user.details.name || "Anonymous"}</span>
             </div>
             <div style={{height:30,backgroundColor:"white",padding:"5px 15px 5px 35px", backgroundColor:"#e64500"}}>
                 <span style={{color:"white"}} className="pull-left">Orders</span>
@@ -86,23 +110,5 @@ class NavComponent extends React.Component {
     )
     }
 }
-NavComponent.contextTypes = {
-    store: PropTypes.object,
-    openNav: PropTypes.func,
-    closeNav: PropTypes.func
-}
-export default connect(
-    (state, props) => {
-        return {
-            user : user
-        }
-    },
-    dispatch =>
-        ({
-            logoutUser() {
-                logoutUser(dispatch)
-            }
-        })
-)(NavComponent)
 
-//module.exports = NavComponent;
+export default connect( mapStateToProps, mapDispatchToProps )( NavComponent )
