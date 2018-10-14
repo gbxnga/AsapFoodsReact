@@ -19,6 +19,8 @@ import C from '../../constants/constants';
 import {NavLink, Redirect} from 'react-router-dom';
 import toast from '../../modules/toast';
 
+import ThankYou from './ThankYou'
+
 class CheckoutContainer extends React.Component {
     constructor(props) {
         super(props);
@@ -30,14 +32,16 @@ class CheckoutContainer extends React.Component {
             loading: true,
             plates: [],
             area_charge: 150,
+            processingRequest: false,
+            verifyingCoupone: false, 
+            transaction_ref: ""
         };
         this.displayThankYou = this.displayThankYou.bind(this);
         this.payWithPaystack = this.payWithPaystack.bind(this);
         this.processOrder = this.processOrder.bind(this);
         this.submitOrder = this.submitOrder.bind(this);
         this.verifyCoupone = this.verifyCoupone.bind(this);
-        this._updateAreaCharge = this._updateAreaCharge.bind(this);
-        console.log(this.state);
+        this._updateAreaCharge = this._updateAreaCharge.bind(this); 
     }
 
     async componentDidMount() {
@@ -55,6 +59,13 @@ class CheckoutContainer extends React.Component {
 
                 loading:false
             });
+
+            // load paystack 
+            const paystackJS = "https://js.paystack.co/v1/inline.js";
+            $.getScript(paystackJS, function() {
+                console.log('PAYSTACK LOADED');
+            });
+
         } catch (error) {
             console.error(error);
             this.setState({ loading: false });
@@ -70,84 +81,94 @@ class CheckoutContainer extends React.Component {
             const token = user.details.auth_token;
 
         if ($('#cb3').is(':checked')) {
-            $('#place-order-btn').attr("disabled", "disabled").html('<i class="fa fa-spinner fa-spin fa-1x fa-fw"></i><span class="sr-only">Loading...</span>');
-               
+            //$('#place-order-btn').attr("disabled", "disabled").html('<i class="fa fa-spinner fa-spin fa-1x fa-fw"></i><span class="sr-only">Loading...</span>');
+            this.setState({ processingRequest: true });  
             let code = ( $('#coupone').val() =='' || $('#coupone').val().length < 2 ) ? '1234' : $('#coupone').val() 
             axios.get(`${C.GET_TOTAL_API}/${code}/${$("#selectArea").val()}?token=${token}`)
               .then(response => {
                 console.log(response)
                 return response
               })
-              .then(json => {
+              .then( async json => {
     
                 if (json.data.success) {
-                    var charge = json.data.data;
-                    if (charge < 50) charge = 5;
+                    let charge = json.data.data < 50 ? 5 : json.data.data; 
 
                     // tell paystack to process
-                    this.payWithPaystack(charge);
+
+                    const { payWithPaystack } = this
+
+                    try {
+
+                        const transaction_ref = await payWithPaystack(charge);
+
+                        toast('Transaction successful');   
+                        this.setState({ transaction_ref })
+                        this.submitOrder();
+
+                    }catch(e){
+                        console.error(e)
+                        toast('Transaction was cancelled'); 
+                        this.setState({ processingRequest: false }); 
+                    }
+                    
                 } 
                 else {
                     // 
                     toast('Couldnt get total charge!');
-                    //$("#place-order-btn").removeAttr("disabled").html('Place Order');
+                    this.setState({ processingRequest: false }); 
                     return;
-                }
-                
-                //$("#place-order-btn").removeAttr("disabled").html('Place Order');
+                } 
               })
               .catch((error) => {
                   console.log(` ${error}`)
-                  //$("#place-order-btn").removeAttr("disabled").html('Place Order');
+                  this.setState({ processingRequest: false }); 
                   toast('Connection Error. Try again');
               });
-        } else {
-            // pay on delivery - trigger checkout
-            // $('#place_order_form').trigger("submit");
+        } else { 
             this.submitOrder();
         }
     }
     payWithPaystack(charge) {
-        let user = this.context.store.getState().user.details
-        console.log(user)
+        let user = this.props.user.details 
+
+        return new Promise( ( resolve, reject ) => {
+
+            let handler = window.PaystackPop.setup({
+                key: 'pk_test_354160b69baa943cd10b0c6f4c5472d57e1a5034',
+                email: user.email || 'iamblizzyy@gmail.com',
+                amount: charge * 100,
+                ref: '' + Math.floor((Math.random() * 1000000000) + 1), // generates a pseudo-unique reference. Please replace with a reference you generated. Or remove the line entirely so our API will generate one for you
+                metadata: {
+                    custom_fields: [{
+                        display_name: "Mobile Number",
+                        variable_name: "mobile_number",
+                        value: "+2348012345678"
+                    }]
+                },
+                callback: function(response) { 
+
+                    resolve(response.reference)
+                    
+                },
+                onClose: function() {
+                    reject('Transaction was cancelled') 
+                } 
+            });
+            handler.openIframe();
+
+        })
     
-        var handler = window.PaystackPop.setup({
-            key: 'pk_test_354160b69baa943cd10b0c6f4c5472d57e1a5034',
-            email: user.email || 'iamblizzyy@gmail.com',
-            amount: charge * 100,
-            ref: '' + Math.floor((Math.random() * 1000000000) + 1), // generates a pseudo-unique reference. Please replace with a reference you generated. Or remove the line entirely so our API will generate one for you
-            metadata: {
-                custom_fields: [{
-                    display_name: "Mobile Number",
-                    variable_name: "mobile_number",
-                    value: "+2348012345678"
-                }]
-            },
-            callback: function(response) {
-                // check()
-                toast('Transaction successful');
-                $('#transaction_ref').val(response.reference);
-    
-                //$('#place_order_form').trigger("submit");
-                this.submitOrder();
-                
-            }.bind(this),
-            onClose: function() {
-                toast('Transaction was cancelled');
-                $("#place-order-btn").removeAttr("disabled").html('Place Order');
-                //$('#place_order_form').trigger("submit");
-            }
-        });
-        handler.openIframe();
+
     }
-    //$('#place_order_form').on('submit', function(e) {
-    submitOrder(){
-        $('#place-order-btn').attr("disabled", "disabled").html('<i class="fa fa-spinner fa-spin fa-1x fa-fw"></i><span class="sr-only">Loading...</span>');
     
+    submitOrder(){
+        
+        this.setState({ processingRequest: true });
 
         
         var formData = new FormData();
-        const {user} = this.context.store.getState()
+        const {user} = this.props
 
         formData.append("token", user.details.auth_token);
 
@@ -173,20 +194,21 @@ class CheckoutContainer extends React.Component {
             else
                 toast('We could not process your order');
             
-          
-          $("#place-order-btn").removeAttr("disabled").html('Place Order');
+           
+          this.setState({ processingRequest: false });
         })
         .catch((error) => {
-            console.log(` ${error}`)
-            $("#place-order-btn").removeAttr("disabled").html('Place Order');
+            console.error(` ${error}`)
+            this.setState({ processingRequest: false }); 
             toast('Connection Error. Try again');
         });
     };
     verifyCoupone(){
-        $('#verify-coupone-btn').attr("disabled", "disabled").html('<i class="fa fa-spinner fa-spin fa-1x fa-fw"></i><span class="sr-only">Loading...</span>');
-    
+        this.setState({ verifyingCoupone: true });
+        //$('#verify-coupone-btn').attr("disabled", "disabled").html('<i class="fa fa-spinner fa-spin fa-1x fa-fw"></i><span class="sr-only">Loading...</span>');
+        
         let code = ($('#coupone').val() =='') ? 'none' : $('#coupone').val() 
-        let {user} = this.context.store.getState()
+        let {user} = this.props
         axios.get(`${C.VERIFY_COUPONE_API}/${code}?token=${user.details.auth_token}`)
           .then(response => {
             console.log(response)
@@ -203,11 +225,13 @@ class CheckoutContainer extends React.Component {
             else if (json.data.response == "3") 
                 toast('Invalid Code!');
             
-            $("#verify-coupone-btn").removeAttr("disabled").html('USE CODE');
+            //$("#verify-coupone-btn").removeAttr("disabled").html('USE CODE');
+            this.setState({ verifyingCoupone: false });
           })
           .catch((error) => {
               console.log(` ${error}`)
-              $("#verify-coupone-btn").removeAttr("disabled").html('USE CODE');
+              this.setState({ verifyingCoupone: false });
+              //$("#verify-coupone-btn").removeAttr("disabled").html('USE CODE');
           });
     }
     _updateAreaCharge(area){
@@ -232,30 +256,31 @@ class CheckoutContainer extends React.Component {
         this.setState({area_charge:charge})
     }
     render(display){
-        const {showThankYou, loading, area_charge} = this.state
+        const { showThankYou, loading, area_charge, processingRequest, verifyingCoupone, transaction_ref } = this.state
         const { plates, user } = this.props
         
 
-        let sub_total=0, delivery_charge =0, grand_total =0
-        delivery_charge = plates.length * area_charge
-        $.each(plates, (key, value)=>{
-            sub_total += value.sub_total;
-        })
-        let theplates = plates.length;
-        do
-        {
-            if (theplates % 4 == 0)
+        let sub_total = 0, 
+            delivery_charge = 0, 
+            grand_total = 0;
+
+        delivery_charge = plates.length * area_charge;
+        plates.map( plate => {
+            sub_total += plate.sub_total;
+        });
+        let numberOfPlates = plates.length;
+        do {
+            if (numberOfPlates % 4 === 0)
                 delivery_charge -= area_charge;
 
-            theplates--;
-        }
-        while(theplates>0)
-        grand_total = sub_total + delivery_charge
+                numberOfPlates--;
+        } while( numberOfPlates > 0 );
+        grand_total = sub_total + delivery_charge;
         
         
         return(
             (showThankYou) ? 
-            <ThankYou order_number={this.props.order_number} total_amount={this.props.total_amount} payment_method={this.state.payment_method} />
+            <ThankYou order_number={this.state.order_number} total_amount={this.state.total_amount} payment_method={this.state.payment_method} />
         : (loading) ?
         
             <ComponentWithHeader 
@@ -264,7 +289,12 @@ class CheckoutContainer extends React.Component {
                     showBack:false   
                 }}
                 Component={ () => <div id="load" style={{backgroundColor:"transparent",opacity:0.9}}>
-                <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+                <div className="lds-ellipsis">
+                    <div />
+                    <div />
+                    <div />
+                    <div />
+                </div>
             
                 </div>}
             />
@@ -298,7 +328,18 @@ class CheckoutContainer extends React.Component {
                                 <form id="verify-coupone-formm">
                                     <input type="text" value="" name="coupone_code" hidden="hidden" /> 
                                 </form>
-                                <CheckoutInfo _updateAreaCharge={this._updateAreaCharge} verifyCoupone={this.verifyCoupone} grand_total={grand_total} sub_total={sub_total} delivery_charge={delivery_charge} processOrder={this.processOrder} user={user}/>
+                                <CheckoutInfo 
+                                    transaction_ref={transaction_ref} 
+                                    verifyingCoupone={verifyingCoupone} 
+                                    processingRequest={processingRequest} 
+                                    _updateAreaCharge={this._updateAreaCharge} 
+                                    verifyCoupone={this.verifyCoupone} 
+                                    grand_total={grand_total} 
+                                    sub_total={sub_total} 
+                                    delivery_charge={delivery_charge} 
+                                    processOrder={this.processOrder} 
+                                    user={user}
+                                />
                                 
                             </div>
                         </div>

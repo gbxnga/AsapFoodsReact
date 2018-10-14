@@ -80,7 +80,7 @@ class NavComponent extends React.Component {
     
             <div style={{color:"white",height: 150,width:"100%",padding:"10px 30px"}}>
                 <img src={`${constants.site}/src/icons/profile5.png`} width="50" height="50" style={{borderRadius:30,float: "left",clear: "right",marginRight: 10,marginTop:  20}} />
-                <span style={{float: "left",clear:"both", marginTop:15}} className="customerName text-center">{user.details.orders || "Anonymous"}</span>
+                <span style={{float: "left",clear:"both", marginTop:15}} className="customerName text-center">{user.details.name || "Anonymous"}</span>
             </div>
             <div style={{height:30,backgroundColor:"white",padding:"5px 15px 5px 35px", backgroundColor:"#e64500"}}>
                 <span style={{color:"white"}} className="pull-left">Orders</span>

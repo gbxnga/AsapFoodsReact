@@ -1,7 +1,15 @@
 import React, { Component } from 'react';
 import axios from "axios";
 import toast from '../modules/toast'
+import { connect } from 'react-redux'
 
+const mapStateToProps = state => {
+    return {
+        
+      user: state.user
+      
+    }
+}; 
 class PushComponent extends Component {
     constructor(props)
     {
@@ -173,13 +181,13 @@ class PushComponent extends Component {
     }
 
     sendSubscriptionToBackEnd(subscription) {
-        const {user} = this.props.store.getState()
+        const { user } = this.props 
         var formData = new FormData();
 
         formData.append("token", user.details.auth_token);
         formData.append("object", JSON.stringify(subscription));
 
-        axios.post(`https://asapfoods.com.ng/api/push/save-subscription?token=${user.details.auth_token}`, formData)
+        axios.post(`https://api.asapfoods.com.ng/api/push/save-subscription?token=${user.details.auth_token}`, formData)
         .then(response => {
           console.log(response)
           return response
@@ -211,5 +219,4 @@ class PushComponent extends Component {
   }
 }
 
-
-module.exports = PushComponent;
+export default connect( mapStateToProps ) (PushComponent);
