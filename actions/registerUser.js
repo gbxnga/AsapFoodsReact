@@ -21,7 +21,7 @@ export default (id=0,username, password, name, email, phone,address,type,dispatc
         return response
       })
       .then( response => {
-          const { success } = response.data
+          const { success, message } = response.data
 
         if ( success )
         {
@@ -46,7 +46,7 @@ export default (id=0,username, password, name, email, phone,address,type,dispatc
                 type: C.REGISTER_USER_FAILED
             }) 
         }
-        return success
+        return { success, message } 
       }) 
 
 }

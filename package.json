@@ -50,6 +50,7 @@
     "font-awesome-webpack": "0.0.5-beta.2",
     "history": "^4.7.2",
     "isomorphic-fetch": "^2.2.1",
+    "mobile-detect": "^1.4.3",
     "popper.js": "^1.14.4",
     "prop-types": "^15.6.2",
     "react": "^16.5.0",

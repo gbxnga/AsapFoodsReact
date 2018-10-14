@@ -4,6 +4,8 @@ import { connect } from 'react-redux'
 import { user } from '../../reducers'
 import registerUser from '../../actions/registerUser'
 import { Link } from 'react-router-dom'
+
+
  
 
 const mapStateToProps = state => { return user } ;
@@ -25,10 +27,13 @@ class Register extends React.Component {
         this.passwordInput = React.createRef();
         this.emailInput = React.createRef();
         this.phoneInput = React.createRef();
+        this.phoneInput2 = React.createRef();
 
         this.handleRegister = this.handleRegister.bind(this)
         this._registerUser = this._registerUser.bind(this)
     }
+    
+
     async _registerUser( id, username, password, fullname,  email, phone, address="", type="email"){
 
 
@@ -38,13 +43,13 @@ class Register extends React.Component {
 
             this.setState({loading:true})
 
-            const success = await registerUser(id, username, password, fullname,  email, phone, address, type)
+            const { success, message } = await registerUser(id, username, password, fullname,  email, phone, address, type)
 
             if(success){
                 toast(`Regisstration Successful!`)
             }
             else{
-                toast('Registration Failed!')
+                toast(message)
             }
             this.setState({loading:false})
 
@@ -66,7 +71,10 @@ class Register extends React.Component {
             const fullname = this.fullnameInput.value
             const password = this.passwordInput.value
             const phone = this.phoneInput.value
+            const phone2 = this.phoneInput2.value 
             const email = this.emailInput.value
+
+
 
             var regexPhone = /^\d{11}$/;
             var regexName = /^[a-zA-Z0-9 \.]{3,100}$/;  
@@ -90,7 +98,13 @@ class Register extends React.Component {
                 $('.warning').show().html('Password must be 5-12 characters and(or) digits long');
                 toast("Password invalid!");
                 return false;
-            } else {
+            } else if (phone !== phone2){
+                $('.warning').show().html('Your phone number and confirmation phone number do not match');
+                toast("Phone numbers do not match")
+                return;
+
+            } 
+            else {
                 this._registerUser(0, fullname, password, fullname, email, phone, "", "email" )
             }
            
@@ -109,12 +123,13 @@ class Register extends React.Component {
 
             <form id="register-form" onSubmit={this.handleRegister} action=" " method="post " style={{marginTop:"-35px"}}>
                 <p style={{display:"none", width:"90%"}} className="alert alert-warning center-block text-center warning"></p>
-                <input ref={input => (this.fullnameInput = input)}  style={{backgroundColor:"white",border:"1px solid #cccccc"}} autoComplete="off" id="username-input" name="username" type="text" className="center-block" placeholder="Fullname " />
-                <input ref={input => (this.phoneInput = input)}  style={{backgroundColor:"white",border:"1px solid #cccccc"}} autoComplete="off" id="phone-input" name="phone" type="number" className="center-block" placeholder="Phone number " />
-                <input ref={input => (this.emailInput = input)}  style={{backgroundColor:"white",border:"1px solid #cccccc"}} autoComplete="off" id="email-input-2" name="email" type="email" className="center-block" placeholder="email " />
+                <input ref={input => (this.fullnameInput = input)}  style={styles.inputStyle} autoComplete="off" id="username-input" name="username" type="text" className="center-block" placeholder="Fullname " />
+                <input ref={input => (this.phoneInput = input)}  style={styles.inputStyle} autoComplete="off" id="phone-input" name="phone" type="number" className="center-block" placeholder="Phone number " />
+                <input ref={input => (this.phoneInput2 = input)}  style={styles.inputStyle} autoComplete="off" id="phone-input-2" name="phone2" type="number" className="center-block" placeholder="Confirm phone number " />
+                <input ref={input => (this.emailInput = input)}  style={styles.inputStyle} autoComplete="off" id="email-input-2" name="email" type="email" className="center-block" placeholder="email " />
 
-                <input ref={input => (this.passwordInput = input)}  style={{backgroundColor:"white",border:"1px solid #cccccc"}}  autoComplete="off" id="password-input-2" name="password" type="password" className="center-block" placeholder="password" />
-                <button type="submit" disabled={loading} className="landing-page-btn center-block text-center" id="email-login-btn" style={{width:"80%",border:"none",height:44,boxShadow: "0px 8px 15px rgba(0, 0, 0, 0.1)"}} href="#facebook ">
+                <input ref={input => (this.passwordInput = input)}  style={styles.inputStyle}  autoComplete="off" id="password-input-2" name="password" type="password" className="center-block" placeholder="password" />
+                <button type="submit" disabled={loading} className="landing-page-btn center-block text-center" id="email-login-btn" style={styles.registerButton} href="#facebook ">
                 { loading ? 
                         <span> <i className="fa fa-spinner fa-spin fa-1x fa-fw"></i> Loading...</span>
                         : 
@@ -126,6 +141,19 @@ class Register extends React.Component {
 
             </div>
         )
+    }
+}
+
+const styles = {
+    inputStyle: {
+        backgroundColor:"white",
+        border:"1px solid #cccccc"
+    },
+    registerButton: {
+        width:"80%",
+        border:"none",
+        height:44,
+        boxShadow: "0px 8px 15px rgba(0, 0, 0, 0.1)"
     }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Register);
