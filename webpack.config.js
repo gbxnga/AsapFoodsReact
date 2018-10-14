@@ -1,4 +1,5 @@
-//const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const MinifyPlugin = require("babel-minify-webpack-plugin");
 var path = require('path');
 const dist = 'dist'
 //const workboxPlugin = require('workbox-webpack-plugin');
@@ -27,13 +28,17 @@ module.exports = {
     resolve: {
         extensions: [ '.js', '.jsx'],
     },
+    optimization: {
+        minimizer: [new UglifyJsPlugin()]
+      },
     /*devServer: {
         port: 7090
     },*/
     plugins: [
-        /*new UglifyJsPlugin({
+        new MinifyPlugin({}, {}),
+        new UglifyJsPlugin({
             sourceMap: true
-        }),
+        }), 
        /* new webpack.ProvidePlugin({
             $: "jquery",
             jquery: "jquery",

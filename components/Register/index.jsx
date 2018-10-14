@@ -293,7 +293,7 @@ class Register extends Component {
                 
                 </button>
             </form>
-            <p><Link id="dont-have-account-btn " style={{color:"#333333"}} className="text-center center-block" to="login"><span style={{fontSize:13,marginRight:5}} className="glyphicon glyphicon-arrow-left"></span>Back to homepage</Link></p>
+            <p><span onClick={ _ => this.setState({ isValidatingPhoneNumber: false}) } id="dont-have-account-btn " style={{color:"#333333"}} className="text-center center-block" to="login"><span style={{fontSize:13,marginRight:5}} className="glyphicon glyphicon-arrow-left"></span>Back to Registration</span></p>
     
             </div>
             :
