@@ -21,6 +21,9 @@ class ProfileContainer extends React.Component
     {
         $('.modal-backdrop').remove();
     }
+    componentDidCatch(){
+        console.log('ERROR!');
+    }
      
     render(){
         //const {user} = this.state
