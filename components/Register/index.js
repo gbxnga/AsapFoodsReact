@@ -34,7 +34,8 @@ class Register extends Component {
             isValidatingPhoneNumber: false,
             warning: '',
             loading: false,
-            resendingCode: false
+            resendingCode: false,
+            callingPhone:false
 
         }
         this.textInput = React.createRef();
@@ -43,12 +44,58 @@ class Register extends Component {
         this._sendValidationCode = this._sendValidationCode.bind(this);
         this._validateSentCode = this._validateSentCode.bind(this);
         this.finalizeRegistration = this.finalizeRegistration.bind(this);
+        this._callPhone = this._callPhone.bind(this);
 
 
+    }
+    _callPhone(phone, name){
+
+        this.setState({callingPhone:true})
+ 
+        let formData = new FormData();
+
+        formData.append("phone", phone);
+        formData.append("name", name);
+
+        axios.post('https://api.asapfoods.com.ng/api/call-phone', formData)
+            .then(response => {
+                console.log(response)
+                return response
+            })
+            .then(json => {
+                if (json.data.success) {
+
+                    const { callingPhone } = this.state
+
+                    // if user was resending code to their phone number 
+                    // alert them its been resent 
+
+                    if(callingPhone) toast(`Calling ${phone}...`);
+
+                    this.setState({
+                        isValidatingPhoneNumber: true,
+                        loading: false,
+                        callingPhone: false
+                    })  
+                    
+                }
+                else{
+                    toast(`Couldn't call ${phone}`)
+                    this.setState({ loading: false, callingPhone: false }); 
+                }
+                
+            })
+            .catch((error) => {
+                //return false
+                toast('An Error Occured! Please try again')
+                this.setState({ loading: false, callingPhone: false }); 
+                console.log(`${formData} ${error}`)
+            });       
     }
     
     _sendValidationCode(phone, name) {
 
+        this.setState({resendingCode:true})
         let formData = new FormData();
 
         formData.append("phone", phone);
@@ -258,7 +305,7 @@ class Register extends Component {
             
         )*/
         //let _code;
-        const {name, password, phone, email, isValidatingPhoneNumber, validationCode, warning, loading, resendingCode} = this.state
+        const {name, password, phone, email, isValidatingPhoneNumber, validationCode, warning, loading, resendingCode, callingPhone} = this.state
         
        
         console.log(JSON.stringify(this.state))
@@ -274,16 +321,23 @@ class Register extends Component {
             <form id="register-form" onSubmit={e => this._validateSentCode(e)} action=" " method="post " style={{marginTop:"-35px"}}>
                 <p style={{display:"none", width:"90%"}} className="alert alert-warning center-block text-center warning"></p>
                 <p style={{display:"block", width:"90%"}} className="alert alert-info center-block text-center warning">Enter the 5 digit code sent to <strong>{phone}</strong></p>
-                <p id="resend-code-btn" style={{display:"block", width:"35%",textAlign:"center",cursor: "pointer",padding: "7px 5px",marginBottom: "0px"}} onClick={()=> { if(resendingCode || loading) return; this._sendValidationCode(phone, name); this.setState({resendingCode:true})}} className="text-warning center-block">
-                <strong> {
-                    resendingCode ? 
-                    <span><i class="fa fa-spinner fa-spin fa-1x fa-fw"/> RESENDING...</span>: "RESEND CODE"}
-                </strong>
-                </p>
+                 
+                <div className="col-md-12 text-center">
+                    <button style={{padding:"7px", cursor:"pointer"}} disabled={loading || resendingCode || callingPhone}  className="text-warning"  type="button" onClick={ _ => this._sendValidationCode(phone, name) } >
+                        
+                        <span> { resendingCode ? <i class="fa fa-spinner fa-spin fa-1x fa-fw"/> : <i class="fa fa-envelope fa-1x fa-fw"/> } </span>: 
+                        RESEND CODE
+                        
+                    </button>
+                    <button style={{padding:"7px", cursor:"pointer"}} disabled={loading || resendingCode || callingPhone}  className="text-warning" type="button" onClick={ _ =>  this._callPhone(phone, name) }>
+                        <span> { callingPhone ? <i class="fa fa-spinner fa-spin fa-1x fa-fw"/> : <i class="fa fa-phone fa-1x fa-fw"/> }</span> 
+                        CALL ME
+                    </button>
+                </div>
 
-                <input style={{backgroundColor:"white",border:"1px solid #cccccc",display:"none"}} id="code-input" name="codee"  type="text" className="center-block" placeholder="Validation Code " />
+                <input style={{backgroundColor:"white",border:"1px solid #cccccc",display:"none"}} id="code-input" name="codee"  type="number" className="center-block" placeholder="Validation Code " />
                 <input onChange={this._handleChange.bind(this, 'validationCode')} value={validationCode} style={{backgroundColor:"white",border:"1px solid #cccccc"}} id="code-input" name="code" type="text" className="center-block" placeholder="Validation Code " />
-                <button disabled={loading || resendingCode} type="submit" className="landing-page-btn center-block text-center" id="email-login-btn" style={{width:"80%",border:"none",height:44,boxShadow: "0px 8px 15px rgba(0, 0, 0, 0.1)"}} href="#facebook ">
+                <button disabled={loading || resendingCode || callingPhone} type="submit" className="landing-page-btn center-block text-center" id="email-login-btn" style={{width:"80%",border:"none",height:44,boxShadow: "0px 8px 15px rgba(0, 0, 0, 0.1)"}} href="#facebook ">
                 
                  
                 { loading ? 
