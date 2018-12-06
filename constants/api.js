@@ -1,4 +1,5 @@
-export const BASE_URL = 'https://api.asapfoods.com.ng';
+export const BASE_URLS = 'https://api.asapfoods.com.ng';
+export const BASE_URL = 'http://localhost/asapfoods-server';
 
 export const GET_KITCHENS_API = `${BASE_URL}/api/kitchens`;
 export const LOGIN_USER_API = `${BASE_URL}/api/user/login`;
@@ -15,3 +16,4 @@ export const GET_ORDERS_API = `${BASE_URL}/api/user/orders`;
 export const GET_ORDER_API = `${BASE_URL}/api/user/order`;
 export const VALIDATE_PHONE_NUMBER_API = `${BASE_URL}/api/user/send-validation-code`;
 export const VALIDATE_SENT_CODE_API = `${BASE_URL}/api/user/verify-sent-code`;
+export const SAVE_PUSH_SUBSCRIPTION_API = `${BASE_URL}/api/push/save-subscription`;

@@ -146,13 +146,13 @@ class Register extends Component {
 
             this.setState({loading:true})
 
-            const success = await registerUser(id, username, password, fullname,  email, phone, address, type)
+            const { success, message } = await registerUser(id, username, password, fullname,  email, phone, address, type)
 
             if(success){
                 toast(`Regisstration Successful!`)
             }
             else{
-                toast('Registration Failed!')
+                toast(message)
             }
             this.setState({loading:false})
 

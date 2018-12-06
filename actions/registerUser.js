@@ -1,4 +1,6 @@
-import C from '../constants/constants'
+import {
+    REGISTER_USER_API,
+} from '../constants/api'
 import toast from '../modules/toast'
 import axios from "axios";
 
@@ -15,13 +17,13 @@ export default (id=0,username, password, name, email, phone,address,type,dispatc
     formData.append("name", name);
     formData.append("id", id);
     
-    return axios.post(C.REGISTER_USER_API, formData)
+    return axios.post(REGISTER_USER_API, formData)
       .then(response => {
         console.log(response)
         return response
       })
       .then( response => {
-          const { success } = response.data
+          const { success, message } = response.data
 
         if ( success )
         {
@@ -46,7 +48,7 @@ export default (id=0,username, password, name, email, phone,address,type,dispatc
                 type: C.REGISTER_USER_FAILED
             }) 
         }
-        return success
+        return { success, message } 
       }) 
 
 }

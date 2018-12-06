@@ -21,30 +21,19 @@ class ProfileContainer extends React.Component
     {
         $('.modal-backdrop').remove();
     }
-    
-    componentDidMount(){
-        const {plates} = this.context.store.getState()
-        
-        $('header #right').attr('data-content', `${plates.length}`);
-    }
-    componentDidUpdate()
-    {
-        const {plates} = this.context.store.getState()
-        
-        $('header #right').attr('data-content', `${plates.length}`);
-    }
+     
     render(){
         //const {user} = this.state
-        const {user} = this.context.store.getState()
-        const {openNav, closeNav} = this.context
+        const { user } = this.props  
+        console.log(user)
         return(
             <div>
-                <NavComponent closeNav={closeNav}/>
-                <Header showBack={(this.props.location.pathname.endsWith('/edit-profile'))} title={(this.props.location.pathname.endsWith('/edit-profile')) ? "Edit Profile" : "Profile"} openNav={openNav}/>
+                <NavComponent />
+                <Header showBack={(this.props.location.pathname.endsWith('/edit-profile'))} title={(this.props.location.pathname.endsWith('/edit-profile')) ? "Edit Profile" : "Profile"}  />
                 {(this.props.location.pathname.endsWith('/edit-profile'))? 
                 <EditProfile updateProfile={this.props.updateProfile} logoutUser={this.props.logoutUser} user={user}/>
                 :
-                <Profile store={this.context.store}updateProfile={this.props.updateProfile} logoutUser={this.props.logoutUser} user={user}/>}
+                <Profile updateProfile={this.props.updateProfile} logoutUser={this.props.logoutUser} user={user}/>}
             </div>
         )
     }
@@ -58,13 +47,13 @@ ProfileContainer.contextTypes = {
 export default connect(
     (state, props) => { 
         return {
-            user : user
+            user : state.user
         }
     },
     dispatch =>
         ({
             logoutUser() {
-                logoutUser(dispatch)
+                return logoutUser(dispatch)
             },
             updateProfile(id, name, password, phone,email, address, auth_token){
                 updateProfile(id, name, password, phone,email, address, auth_token, dispatch)

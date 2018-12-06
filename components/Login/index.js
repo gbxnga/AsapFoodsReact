@@ -107,7 +107,7 @@ class Login extends Component {
                     }
                 </button>
             </form>
-            <div className="col-md-12">
+            <div style={{display:"none"}} className="col-md-12">
                 <h1 style={{fontSize:14}}>OR</h1>
             </div>
             <p><Link to="register" style={{marginTop:15}} id="dont-have-account-btn" className="text-center center-block" href="">Dont have an account?</Link></p>

@@ -91,3 +91,42 @@ if (workbox) {
 } else {
   console.log(`Boo! Workbox didn't load 😬`);
 }
+
+self.addEventListener('openWindow', function() {
+  console.log('WINDOW OPEND');
+});
+/*self.openWindow(url).then(function(WindowClient) {
+  // do something with your WindowClient
+  console.log('WINDOW OPEND');
+});*/
+self.addEventListener('push', function(event) {
+  console.log('[Service Worker] Push Received.');
+  console.log(event)
+  console.log(`[Service Worker] Push had this data: "${event.data.text()}"`);
+
+  const title = 'Asapfoods';
+  const data = JSON.parse(event.data.text()); 
+  const options = {
+      body: data.message || 'You have a notification',
+      icon: 'src/icons/logo 48.png',
+      badge: 'src/icons/logo 96.png',
+      data: data
+  };
+
+  event.waitUntil(self.registration.showNotification(title, options));
+});
+self.addEventListener('notificationclick', function(event) {
+  console.log(event)
+  console.log('[Service Worker] Notification click Received.');
+
+  event.notification.close();
+  const orderId = event.notification.data.order_id ;
+  if (orderId) {
+   // let uri = 
+  }
+  console.log(event.target.location.host);
+
+  event.waitUntil(
+      clients.openWindow(event.target.location.host+'/view-order/'+orderId)
+  );
+});

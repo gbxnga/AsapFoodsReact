@@ -35,12 +35,12 @@ const updateProfile = (id, fullname, password, phone, email, address,auth_token,
                 id : json.data.data.id,
                 email: json.data.data.email,
                 auth_token: json.data.data.auth_token,
-                auth_type:json.data.data.auth_type,
+                auth_type:json.data.data.oauth_provider,
                 orders:json.data.data.orders,
                 timestamp: new Date().toString()
             })
             window.history.back()
-            toast('Profile Updated!')
+            toast(`${json.data.message}`)
             
         }
         else
@@ -51,7 +51,7 @@ const updateProfile = (id, fullname, password, phone, email, address,auth_token,
 
             throw new Error('Failed')
             
-            toast('Profile update failed')
+            toast(`${json.data.message}`)
             
         }
         $("#submit_edit_profile").removeAttr("disabled").html('UPDATE PROFILE');

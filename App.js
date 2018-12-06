@@ -46,12 +46,50 @@ import {
 //const store = storeFactory(true)
 import {persistor, store} from './factories/store' 
 
+import MobileDetect from 'mobile-detect';
+
 
 class App extends React.Component {
 
+    constructor(props){
+        super(props)
+        this.state = {
+            isMobile: true
+        }
+    }
+
     
       componentDidMount(){
-        console.log('Updated!')
+        console.log('Updated!')  
+        let md = new MobileDetect(window.navigator.userAgent);
+        if(!md.mobile() && !md.phone() && !md.tablet()){
+            this.setState({ isMobile: false})
+
+        } 
+
+
+        window.onresize = function(event) {
+            let md = new MobileDetect(window.navigator.userAgent); 
+            console.log(event)
+            console.log( md.mobile() );          // 'Sony'
+            console.log( md.phone() );           // 'Sony'
+            console.log( md.tablet() );          // null
+            console.log( md.userAgent() );       // 'Safari'
+            console.log( md.os() );              // 'AndroidOS'
+            console.log( md.is('iPhone') );      // false
+            console.log( md.is('bot') );         // false
+            console.log( md.version('Webkit') );         // 534.3
+            console.log( md.versionStr('Build') );       // '4.1.A.0.562'
+            console.log( md.match('playstation|xbox') ); // false
+            if(!md.mobile() && !md.phone() && !md.tablet()){
+                this.setState({ isMobile: false})
+    
+            } else {
+                this.setState({ isMobile: true })
+            }
+        }.bind(this);
+
+
 
       }
     componentWillMount() {
@@ -79,7 +117,26 @@ class App extends React.Component {
 
 
     render() {
+       
         const { user } = store.getState() 
+        const { isMobile } = this.state
+
+        if(!isMobile){ 
+
+            return (
+                <div>
+
+                    <div style={{display: "inline-block",width: 192,height: 192,marginLeft: "-96px",marginTop: "-96px",position: "fixed", left: "50%", top: "50%"}}>
+                        
+                        <img src="src/icons/logo 192.png" style={{borderRadius:"50%"}} />
+                        
+
+                    </div> 
+                    <h1 style={{position: "absolute",bottom: "30%",textAlign: "center",width: "100%"}} className="text-center">This Site is optimised for moblile use only</h1>
+                    
+                </div> 
+            )
+        }
         
         
         if (!user.isLoggedIn && !this.props.location.pathname.endsWith('/login') && !this.props.location.pathname.endsWith('/register')) {

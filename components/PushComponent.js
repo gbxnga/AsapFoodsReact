@@ -1,7 +1,19 @@
 import React, { Component } from 'react';
 import axios from "axios";
 import toast from '../modules/toast'
+import { connect } from 'react-redux';
 
+import {
+    SAVE_PUSH_SUBSCRIPTION_API,
+} from '../constants/api'
+
+const mapStateToProps = state => {
+    return {
+        
+      user: state.user
+      
+    }
+}; 
 class PushComponent extends Component {
     constructor(props)
     {
@@ -173,25 +185,23 @@ class PushComponent extends Component {
     }
 
     sendSubscriptionToBackEnd(subscription) {
-        const {user} = this.props.store.getState()
+        const { user } = this.props 
         var formData = new FormData();
 
         formData.append("token", user.details.auth_token);
         formData.append("object", JSON.stringify(subscription));
+        formData.append("token", user.details.auth_token);
 
-        axios.post(`https://asapfoods.com.ng/api/push/save-subscription?token=${user.details.auth_token}`, formData)
+        axios.post(SAVE_PUSH_SUBSCRIPTION_API, formData)
         .then(response => {
           console.log(response)
           return response
         })
         .then(json => {
 
-          if (json.data.success) {
+          if (!json.data.success) {
+            toast('Failed to save subscription');
           } 
-          else {
-              // 
-              toast('Couldnt get total charge!');
-          }
           
         })
         .catch((error) => {
@@ -211,5 +221,4 @@ class PushComponent extends Component {
   }
 }
 
-
-module.exports = PushComponent;
+export default connect( mapStateToProps ) (PushComponent);

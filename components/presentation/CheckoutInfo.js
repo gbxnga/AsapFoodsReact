@@ -1,5 +1,5 @@
 import toast from '../../modules/toast'
-const CheckoutInfo = ({delivery_charge=0, grand_total=0, sub_total=0,user={}, processOrder=f=>f, verifyCoupone=f=>f, _updateAreaCharge=f=>f}) =>{
+const CheckoutInfo = ({ transaction_ref="",verifyingCoupone=false,processingRequest=false,delivery_charge=0, grand_total=0, sub_total=0,user={}, processOrder=f=>f, verifyCoupone=f=>f, _updateAreaCharge=f=>f}) =>{
 
     // has to manage its own state from this point 
     let _name, _phone, _address
@@ -38,32 +38,26 @@ const CheckoutInfo = ({delivery_charge=0, grand_total=0, sub_total=0,user={}, pr
             <div id="additional-comment-div" style={{marginTop:15}}>
                 
                     <input type="text" hidden="hidden" name="auth_token" value="" id="auth_token_id" />
-                    <input type="text" hidden="hidden" name="transaction_ref" value="" id="transaction_ref" />
+                    <input type="text" hidden="hidden" name="transaction_ref" value={`${transaction_ref}`} id="transaction_ref" />
                     <input type="text" hidden="hidden" name="transaction_total" value="" id="transaction_total" />
                     <input autoComplete="off"  ref={input => _name = input} defaultValue={`${user.details.name}`} id="checkout-names" style={{fontSize:14}} name="name" className="center-block" type="text" placeholder="Name" />
                     <input autoComplete="off"  ref={input => _phone = input} defaultValue={`${user.details.phone}`}  id="checkout-phone" style={{fontSize:14}} name="phone" className="center-block" type="text" placeholder="Phone Number" />
                     <textarea id="checkout-address"  ref={input => _address = input}  defaultValue={`${user.details.address}`}  placeholder="Address" name="address" className="center-block" style={{height:80, padding:10,width:"90%",fontSize:14, border:"none",borderBottom:"1px solid #cccccc"}}/>
                     
-                    <select id="selectArea" onChange={_updateAreaCharge} name="area" style={{padding:  10,
-    borderColor:"#FF4C00",
-    borderWidth:1,
-    margin:  15,
-    marginBottom:0,
-    height:  50,
-    width: "92%",
-    float:  "left",color:"#666",backgroundColor:"white"
-                    }}><option value="none">Select Area</option>
+                    <select id="selectArea" onChange={_updateAreaCharge} name="area" style={styles.selectAreaInput}><option value="none">Select Area</option>
     <option value="southGate">South gate</option>
     <option value="northGate">North gate</option></select>
     <input autoComplete="off"   style={{fontSize:14,marginLeft:20}} name="comment" className="center-block" type="text" placeholder="Additional Comment..." />
                     
                     <div className="col-md-12" style={{marginLeft: 5,paddingBottom: 15}}><input id="coupone" autoComplete="off" style={{fontSize:14,float: "left",width: "50%"}} name="discount" className="center-block" type="text" placeholder="Discount Code(if any).."/>
-                            <button id="verify-coupone-btn" type="button" onClick={verifyCoupone} className="btn btn-sm" style={{
-                        float: "right",backgroundColor:"#FF4C00",border:"1px solid #FF4C00",color:"white",
-                        width: "45%",
-                        marginTop: 7,
-                        padding: 7,height:34
-                            }}>USE CODE</button>
+                            <button disabled={verifyingCoupone} id="verify-coupone-btn" type="button" onClick={verifyCoupone} className="btn btn-sm" style={styles.verifyCouponeButton}>
+                            {
+                                verifyingCoupone ?
+                                <span> <i className="fa fa-spinner fa-spin fa-1x fa-fw"></i> Verifying...</span>:
+                                "USE CODE"
+                            } 
+                            
+                            </button>
                     </div>
                 
             </div>
@@ -165,11 +159,42 @@ const CheckoutInfo = ({delivery_charge=0, grand_total=0, sub_total=0,user={}, pr
 
         <div>
             <div id="create-plate-form-container">
-                <button className="center-block" type="button" onClick={handleProcessOrder} href="" style={{width:"100%",height:39,border:"none",borderRadius:0}} id="place-order-btn">Place Order</button>
+                <button disabled={processingRequest} className="center-block" type="button" onClick={handleProcessOrder} href="" style={{width:"100%",height:39,border:"none",borderRadius:0}} id="place-order-btn">
+                {processingRequest ?
+                <span> <i className="fa fa-spinner fa-spin fa-1x fa-fw"></i> Processing...</span> :
+                "Place Order"
+                }
+                
+                </button>
             </div>
         </div>
     </form>
     )
+}
+
+const styles = {
+
+    verifyCouponeButton: {
+        float: "right",
+        backgroundColor:"#FF4C00",
+        border:"1px solid #FF4C00",
+        color:"white",
+        width: "45%",
+        marginTop: 7,
+        padding: 7,height:34,outline:"none"
+    },
+    selectAreaInput: {
+        padding:  10,
+        borderColor:"#FF4C00",
+        borderWidth:1,
+        margin:  15,
+        marginBottom:0,
+        height:  50,
+        width: "92%",
+        float:  "left",
+        color:"#666",
+        backgroundColor:"white"
+    }
 }
 
 module.exports = CheckoutInfo;
