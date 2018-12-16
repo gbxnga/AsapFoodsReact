@@ -1,5 +1,5 @@
-const url2 = 'https://api.asapfoods.com.ng';
-const url = 'http://localhost/asapfoods-server';
+const url = 'https://api.asapfoods.com.ng';
+const url2 = 'http://localhost/asapfoods-server';
 const constants = {
     site: 'https://asapfoods.ng',
     SORT_COLORS: "SORT_COLORS",

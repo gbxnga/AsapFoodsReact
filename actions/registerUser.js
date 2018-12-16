@@ -1,6 +1,11 @@
 import {
     REGISTER_USER_API,
 } from '../constants/api'
+import {
+    LOGIN_USER_SUCCESSFUL,
+    LOGIN_USER_FAILED,
+    REGISTER_USER_FAILED
+} from '../constants'
 import toast from '../modules/toast'
 import axios from "axios";
 
@@ -29,7 +34,7 @@ export default (id=0,username, password, name, email, phone,address,type,dispatc
         {
             let { username, password, fullname, address, phone, id, email, auth_token, auth_type, orders, oauth_provider } = response.data.data
             dispatch({
-                type: C.LOGIN_USER_SUCCESSFUL,
+                type: LOGIN_USER_SUCCESSFUL,
                 username, 
                 name: fullname,
                 address,
@@ -45,7 +50,7 @@ export default (id=0,username, password, name, email, phone,address,type,dispatc
         else
         {
             dispatch({
-                type: C.REGISTER_USER_FAILED
+                type: REGISTER_USER_FAILED
             }) 
         }
         return { success, message } 
