@@ -29,13 +29,8 @@ module.exports = {
     resolve: {
         extensions: [ '.js', '.jsx'],
     },
-<<<<<<< HEAD
-    optimization: {
-        minimizer: [new UglifyJsPlugin()]
-=======
     devServer: {
         historyApiFallback: true,
->>>>>>> origin/master
       },
     /*devServer: {
         port: 7090
