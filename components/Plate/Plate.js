@@ -1,5 +1,5 @@
 import constants from '../../constants/constants';
-const Plate = ({deletePlate=f=>f,plate, deleteBtn=true, deleting = false}) =>{
+export default ({deletePlate=f=>f,plate, deleteBtn=true, deleting = false}) =>{
 
     
     const items =    $.map(plate.items, (item) => { return [item] })
@@ -38,5 +38,3 @@ const Plate = ({deletePlate=f=>f,plate, deleteBtn=true, deleting = false}) =>{
     </div>
     )
 }
-
-module.exports = Plate;

@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import axios from "axios";
-import toast from '../modules/toast'
+import toast from '../../modules/toast'
 import { connect } from 'react-redux';
 
 import {
     SAVE_PUSH_SUBSCRIPTION_API,
-} from '../constants/api'
+} from '../../constants/api'
 
 const mapStateToProps = state => {
     return {
@@ -42,7 +42,12 @@ class PushComponent extends Component {
                 });
         } else {
             console.warn('Push messaging isnt supported');
-            this.pushButton.textContent = 'Push Not Supported';
+            try {
+                this.pushButton.textContent = 'Push Not Supported';
+            }
+            catch(e){
+                console.error(e)
+            }
         };
 
     }

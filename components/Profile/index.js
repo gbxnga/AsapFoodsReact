@@ -2,10 +2,10 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
-import NavComponent from '../NavComponent'
-import Header from '../presentation/Header'
-import Profile from '../presentation/Profile'
-import EditProfile from '../presentation/EditProfile'
+import SideBar from '../SideBar'
+import Header from '../Header';
+import Profile from './Profile'
+import EditProfile from './EditProfile'
 
 import user from '../../reducers/user'
 import logoutUser from '../../actions/logoutUser'
@@ -21,6 +21,9 @@ class ProfileContainer extends React.Component
     {
         $('.modal-backdrop').remove();
     }
+    componentDidCatch(){
+        console.log('ERROR!');
+    }
      
     render(){
         //const {user} = this.state
@@ -28,7 +31,7 @@ class ProfileContainer extends React.Component
         console.log(user)
         return(
             <div>
-                <NavComponent />
+                <SideBar />
                 <Header showBack={(this.props.location.pathname.endsWith('/edit-profile'))} title={(this.props.location.pathname.endsWith('/edit-profile')) ? "Edit Profile" : "Profile"}  />
                 {(this.props.location.pathname.endsWith('/edit-profile'))? 
                 <EditProfile updateProfile={this.props.updateProfile} logoutUser={this.props.logoutUser} user={user}/>

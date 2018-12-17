@@ -1,15 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import NavComponent from '../NavComponent';
-import Header from '../presentation/Header';
-import KitchenItems from '../presentation/KitchenItems';
+import SideBar from '../SideBar';
+import Header from '../Header';
+import Items from './Items';
 import ComponentWithHeader from '../componentWithHeader';
 
 import toast from '../../modules/toast'
 import axios from "axios";
 import C from '../../constants/constants'
-import ErrorPage from '../presentation/ErrorPage'
+import ErrorPage from '../ErrorPage'
 import { connect } from 'react-redux'
 
 const KEYS_TO_FILTERS = ['name'];
@@ -226,7 +226,7 @@ class ItemsContainer extends React.Component
                     
                     : 
                     
-                    <KitchenItems 
+                    <Items 
                         _createPlate={this._createPlate} 
                         _searchUpdated={this._searchUpdated} 
                         filterItem={this.filterItem} 

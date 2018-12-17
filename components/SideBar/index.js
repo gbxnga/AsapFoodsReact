@@ -1,11 +1,10 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import user from '../reducers/user'
-import logoutUser from '../actions/logoutUser'
+import user from '../../reducers/user'
+import logoutUser from '../../actions/logoutUser'
 import { NavLink, Link } from 'react-router-dom'
-import PropTypes from 'prop-types'
-import PushComponent from './PushComponent'
-import constants from '../constants/constants';
+import PropTypes from 'prop-types' 
+import constants from '../../constants/constants';
 
 
 const mapStateToProps = state => {
@@ -21,7 +20,7 @@ const mapDispatchToProps = dispatch => ({
     }
 })
 
-class NavComponent extends React.Component {
+class SideBar extends React.Component {
     constructor(props) {
         super(props)
         this.state = { 
@@ -111,4 +110,4 @@ class NavComponent extends React.Component {
     }
 }
 
-export default connect( mapStateToProps, mapDispatchToProps )( NavComponent )
+export default connect( mapStateToProps, mapDispatchToProps )( SideBar )
