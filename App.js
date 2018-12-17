@@ -20,17 +20,19 @@ import styles from './src/css/main.css'
 
 import 'babel-polyfill';
 
+import { hot } from 'react-hot-loader/root'
+
 window.React = React
 
 
 import Login from './components/Login/'
 import Home from './components/Home'
 import Kitchens from './components/Kitchens'
-import ItemsContainer from './components/container/ItemsContainer'
-import CheckoutContainer from './components/Checkout'
-import ProfileContainer from './components/container/ProfileContainer'
+import ItemsContainer from './components/KitchenItems'
+import Checkout from './components/Checkout'
+import Profile from './components/Profile'
 import Register from './components/Register'
-import OrderContainer from './components/container/OrderContainer'
+import Order from './components/Order'
 import ContactUs from './components/ContactUs'
 
 import { connect, Provider } from 'react-redux'
@@ -149,44 +151,23 @@ class App extends React.Component {
             this.props.history.push("/")
         }
         return (
-            
-            
+           
                 <Switch> 
                     <div id="main">
-                    <Route exact  path="/" component={Home} />
-                    
-                    <Route  path="/login" component={Login} />
-                    
-                    <Route  path="/register" component={Register} />
-                    
-                     
-                    
-            
-                
-                    <Route  path="/kitchens" component={Kitchens}/>                
-                    <Route  path="/kitchen/:id/:name" component={ItemsContainer}/>
-                    
-                    
-            
-                
-                    <Route  path="/checkout" component={CheckoutContainer} />
-            
-                
-                    <Route  path="/profile" edit={false} component={ProfileContainer} />
-                    <Route  path="/edit-profile" edit={true} component={ProfileContainer} />
-            
-                
-                    <Route  path="/contact-us" component={ContactUs} />
-                    <Route  path="/my-orders" component={OrderContainer} />
-                    <Route  path="/view-order/:ref" component={OrderContainer} />
-
-                    
-                    
+                        <Route exact  path="/" component={Home} />                   
+                        <Route  path="/login" component={Login} />                    
+                        <Route  path="/register" component={Register} />            
+                        <Route  path="/kitchens" component={Kitchens}/>                
+                        <Route  path="/kitchen/:id/:name" component={ItemsContainer}/>               
+                        <Route  path="/checkout" component={Checkout} />               
+                        <Route  path="/profile" edit={false} component={Profile} />
+                        <Route  path="/edit-profile" edit={true} component={Profile} />               
+                        <Route  path="/contact-us" component={ContactUs} />
+                        <Route  path="/my-orders" component={Order} />
+                        <Route  path="/view-order/:ref" component={Order} />                   
                     </div>
                 </Switch>
-                    
-            
-   
+  
         )
     }
 
@@ -194,9 +175,11 @@ class App extends React.Component {
 App.propTypes = {
     store: PropTypes.object.isRequired
 }
+
 const LoadingView = ({}) => 
 <div>Loading</div>
 const AppWithRouter = withRouter(props => <App {...props}/>);
+const AppWithHotReload = hot(AppWithRouter);
 console.log(store.getState())
 /**
  * PersistGate is a PureComponent, so children doesn't rerender, 
@@ -208,7 +191,7 @@ render (
     <BrowserRouter>
         <Provider store={store}>
             <PersistGateWithRouter loading={<LoadingView />} persistor={persistor}>
-                <AppWithRouter store={store} />
+                <AppWithHotReload store={store} />
             </PersistGateWithRouter>
         </Provider>
     </BrowserRouter>

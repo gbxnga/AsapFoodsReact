@@ -1,4 +1,4 @@
-import Plate from './Plate'
+import Plate from '../Plate/Plate'
 const Order = ({order={}}) =>
 {
     let plates = JSON.parse(order.content).data

@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import NavComponent from './NavComponent'
-import Header from './presentation/Header'
+import SideBar from './SideBar'
+import Header from './Header';
 
 class ComponentWithHeader extends React.Component {
 

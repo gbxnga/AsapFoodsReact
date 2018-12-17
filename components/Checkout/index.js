@@ -5,14 +5,14 @@ import axios from "axios";
 
 import ComponentWithHeader from '../componentWithHeader';
 
-import PlateList from '../presentation/PlateList';
-import CheckoutInfo from '../presentation/CheckoutInfo';
-import ErrorPage from '../presentation/ErrorPage';
+import PlateList from '../Plate/List';
+import Form from './Form';
+import ErrorPage from '../ErrorPage';
 
 import getPlates from '../../actions/getPlates';
 
-import NavComponent from '../NavComponent';
-import Header from '../presentation/Header';
+import SideBar from '../SideBar';
+import Header from '../Header';
 
 import C from '../../constants/constants';
 
@@ -315,7 +315,7 @@ class CheckoutContainer extends React.Component {
 
         <div>
 
-                <NavComponent />
+                <SideBar />
                 <Header title="Checkout" showBack={false} />
                 
                 <div style={{ paddingBottom: 75,display: "block" }} className="checkout-page page-container">
@@ -328,7 +328,7 @@ class CheckoutContainer extends React.Component {
                                 <form id="verify-coupone-formm">
                                     <input type="text" value="" name="coupone_code" hidden="hidden" /> 
                                 </form>
-                                <CheckoutInfo 
+                                <Form 
                                     transaction_ref={transaction_ref} 
                                     verifyingCoupone={verifyingCoupone} 
                                     processingRequest={processingRequest} 

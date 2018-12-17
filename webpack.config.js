@@ -8,7 +8,8 @@ module.exports = {
     output: {
        path: path.resolve(__dirname, dist),
         //path: path.join(dist,"/assets/js/"),
-        filename: 'bundle.js'
+        filename: 'bundle.js',
+        publicPath: '/'
     },
     module: {
         rules: [
@@ -27,6 +28,9 @@ module.exports = {
     resolve: {
         extensions: [ '.js', '.jsx'],
     },
+    devServer: {
+        historyApiFallback: true,
+      },
     /*devServer: {
         port: 7090
     },*/

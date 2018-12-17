@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
-import PushComponent from '../PushComponent'
-const Profile = ({ user={},logoutUser=f=>f, updateProfile=f=>f}) => {
+import PushNotificationButton from '../PushNotificationButton'
+export default ({ user={},logoutUser=f=>f, updateProfile=f=>f}) => {
         
 
 
@@ -28,7 +28,7 @@ const Profile = ({ user={},logoutUser=f=>f, updateProfile=f=>f}) => {
                     <p><strong>Phone:</strong> <span id="prof-phone">{user.details.phone}</span></p>
                     <p> <strong>E-mail:</strong> <span id="prof-email">{user.details.email} </span></p>
 
-                    <PushComponent />
+                    <PushNotificationButton />
                 </div>
                 <div onClick={()=>logoutUser()} id="" style={{display:"block",padding:"30px 15px",marginBottom:15,backgroundColor:"white",boxShadow:"0 3px 10px rgba(0,0,0,0.1), 0 3px 4px rgba(0,0,0,0.1)"}} className="text-center col-md-12">
                     <button className="btn btn-danger"><span className="fa fa-sign-out"></span>Logout</button>
@@ -40,5 +40,3 @@ const Profile = ({ user={},logoutUser=f=>f, updateProfile=f=>f}) => {
    )
 
 }
-
-module.exports = Profile;

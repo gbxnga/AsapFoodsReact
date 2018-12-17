@@ -1,20 +1,19 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import NavComponent from '../NavComponent'
-import Header from '../presentation/Header'
-import ErrorPage from '../presentation/ErrorPage'
-import OrderList from '../presentation/OrderList'
-import Order from '../presentation/Order'
+import SideBar from '../SideBar'
+import Header from '../Header';
+import ErrorPage from '../ErrorPage'
+import OrderList from './List'
+import Order from './Order'
 
-import C from '../../constants/constants'
-//import {deletePlate, getPlates} from '../../actions/'
+import C from '../../constants/constants';
 import axios from "axios";
 
 
-import toast from '../../modules/toast'
+import toast from '../../modules/toast';
 
-class OrderContainer extends React.Component
+export default class OrderContainer extends React.Component
 {
     constructor(props)
     {
@@ -103,7 +102,7 @@ class OrderContainer extends React.Component
         
         return(
             <div>
-                <NavComponent closeNav={closeNav}/>
+                <SideBar closeNav={closeNav}/>
                 <Header showBack={(this.props.match.path.endsWith('/view-order/:ref'))}  title={(this.props.match.path.endsWith('/view-order/:ref')) ? "View Order" : "My Orders"} openNav={openNav}/>
                 {
 
@@ -137,5 +136,3 @@ OrderContainer.contextTypes = {
     openNav: PropTypes.func,
     closeNav: PropTypes.func
 }
-
-module.exports = OrderContainer;

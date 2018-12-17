@@ -1,6 +1,6 @@
-import KitchenBanner from './KitchenBanner'
+import KitchenBanner from './Banner'
 import Item from './Item'
-import ErrorPage from './ErrorPage'
+import ErrorPage from '../ErrorPage'
 
 const KitchenItems = ({kitchen, items, createPlate=f=>f, filter=f=>f, filterItem=f=>f, _searchUpdated=f=>f, _createPlate=f=>f, _incrementItem=f=>f, selectedItems, _filterItemsBy=f=>f, category, loading}) =>{
 let _searchTerm
