@@ -1,9 +1,5 @@
 const url = 'https://api.asapfoods.com.ng';
-<<<<<<< HEAD
-const url2 = 'http://localhost/asapfoods-server';
-=======
 //const url = 'http://localhost/asapfoods-server';
->>>>>>> origin/master
 const constants = {
     site: 'https://asapfoods.ng',
     SORT_COLORS: "SORT_COLORS",
