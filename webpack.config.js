@@ -4,7 +4,7 @@ var path = require('path');
 const dist = 'dist'
 //const workboxPlugin = require('workbox-webpack-plugin');
 module.exports = {
-    mode: 'development', 
+    //mode: 'development', 
     entry: ["babel-polyfill", './App.js'],
     //entry: './index-client.js', 
     output: {

@@ -12,6 +12,7 @@ import {
     Link
 } from 'react-router-dom'
 import axios from "axios";
+import constants from '../../constants/constants';
 
  
 const mapStateToProps = state => { return state.user } ;
@@ -315,7 +316,7 @@ class Register extends Component {
             <div className="register-page page-container" id=" " className="col-md-12" style={{marginTop:"10%", display:"block"}}>
     
             <div id="landing-page-banner">
-                <img width="150 " height="150 " className="center-block " src="src/icons/logo 192.png " />
+                <img width="150 " height="150 " className="center-block " src={`${constants.site}/src/icons/logo 192.png`} />
             </div>
     
             <form id="register-form" onSubmit={e => this._validateSentCode(e)} action=" " method="post " style={{marginTop:"-35px"}}>
@@ -354,7 +355,7 @@ class Register extends Component {
             <div className="register-page page-container" id=" " className="col-md-12" style={{marginTop:"10%", display:"block"}}>
     
             <div id="landing-page-banner">
-                <img width="150 " height="150 " className="center-block " src="src/icons/logo 192.png " />
+                <img width="150 " height="150 " className="center-block " src={`${constants.site}/src/icons/logo 192.png`} />
             </div>
     
             <form id="register-form" onSubmit={e => this._registerUser(e)} action=" " method="post " style={{marginTop:"-35px"}}>
