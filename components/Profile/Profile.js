@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
-import PushNotificationButton from '../PushNotificationButton'
+import PushNotificationButton from '../PushNotificationButton';
+import constants from '../../constants/constants';
 export default ({ user={},logoutUser=f=>f, updateProfile=f=>f}) => {
         
 
@@ -11,7 +12,7 @@ export default ({ user={},logoutUser=f=>f, updateProfile=f=>f}) => {
         <div className="container">
             <div className="ro">
                 <div id="" style={{marginBottom:15,padding:"30px 15px",backgroundColor:"white",boxShadow:"0 3px 10px rgba(0,0,0,0.1), 0 3px 4px rgba(0,0,0,0.1)"}} className="col-md-12">
-                    <img className="center-block" src="src/icons/profile.png" width="80" height="80"/>
+                    <img className="center-block" src={`${constants.site}/src/icons/profile.png`} width="80" height="80"/>
                     <p style={{padding:15}} className="text-center customerName">{user.details.name}</p>
                     
                     <Link to='edit-profile' id="edit_profile_btn" style={{width:100}} className="btn btn-success btn-sm center-block"><span className="fa fa-pencil-square-o"></span>Edit Profile</Link>

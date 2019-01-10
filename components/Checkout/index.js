@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import axios from "axios";
 
+import constants from '../../constants/constants';
+
 import ComponentWithHeader from '../componentWithHeader';
 
 import PlateList from '../Plate/List';
@@ -323,7 +325,7 @@ class CheckoutContainer extends React.Component {
                         <div className="row">
                             <div className="col-md-12">
                                 <PlateList />
-                                <NavLink title="Add more plates" style={{zIndex:10000000,position:"fixed",bottom:45,right:15,marginBottom:45}} to="kitchens"><img style={{borderRadius:20}} width="45" src="src/icons/add_button.png" /></NavLink>
+                                <NavLink title="Add more plates" style={{zIndex:10000000,position:"fixed",bottom:45,right:15,marginBottom:45}} to="kitchens"><img style={{borderRadius:20}} width="45" src={`${constants.site}/src/icons/add_button.png`} /></NavLink>
                                 <hr/>
                                 <form id="verify-coupone-formm">
                                     <input type="text" value="" name="coupone_code" hidden="hidden" /> 

@@ -1,4 +1,4 @@
-export const BASE_URL = 'https://api.asapfoods.com.ng';
+export const BASE_URL = 'https://api.asapfoods.ng';
 //export const BASE_URL = 'http://localhost/asapfoods-server';
 
 export const GET_KITCHENS_API = `${BASE_URL}/api/kitchens`;

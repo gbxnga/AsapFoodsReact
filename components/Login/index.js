@@ -4,7 +4,8 @@ import { connect } from 'react-redux'
 import user from '../../reducers/user'
 import loginUser from '../../actions/loginUser'
 import toast from '../../modules/toast'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom';
+import constants from '../../constants/constants';
 
 const mapStateToProps = state => { return user } ;
 
@@ -92,7 +93,7 @@ class Login extends Component {
             <div id="" style={{ marginTop: "10%",display:"block" }} className="login-with-page page-container col-md-12">           
 
             <div style={{paddingBottom:30} }className="" id="landing-page-banner">
-                <img width="150" height="150" className="center-block" src="src/icons/logo 192.png" />
+                <img width="150" height="150" className="center-block" src={`${constants.site}/src/icons/logo 192.png`} />
             </div>
             <p style={{display:"none", width:"90%"}} className="alert alert-warning center-block text-center warning"></p>
             <form id="login-form" action="" onSubmit={this.handleLogin} method="post">

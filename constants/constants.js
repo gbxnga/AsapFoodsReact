@@ -1,7 +1,7 @@
-const url = 'https://api.asapfoods.com.ng';
+const url = 'https://api.asapfoods.ng';
 //const url = 'http://localhost/asapfoods-server';
 const constants = {
-    site: 'https://asapfoods.ng',
+    site: 'https://assets.asapfoods.ng',
     SORT_COLORS: "SORT_COLORS",
     ADD_COLOR: "ADD_COLOR",
     RATE_COLOR: "RATE_COLOR",

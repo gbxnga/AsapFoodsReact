@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Kitchen from './Kitchen';
+import constants from '../../constants/constants';
 
 const KitchensList = ({ replaceAll, kitchens }) => (
   <div>
@@ -17,7 +18,7 @@ const KitchensList = ({ replaceAll, kitchens }) => (
           <p className="text-center" style={{ marginTop: 30 }}>Cant find your choice resturant?</p>
           <p>
             <a href="tel:09031576102">
-              <img className="center-block" style={{ display: "block", cursor: "pointer" }} src="src/icons/call.png" alt="call us" width="45" height="45" />
+              <img className="center-block" style={{ display: "block", cursor: "pointer" }} src={`${constants.site}/src/icons/call.png`} alt="call us" width="45" height="45" />
             </a>
           </p>
           <p className="text-center" style={{ color: "rgb(255, 112, 51)", float: "right", width: "100%" }}>Call us</p>

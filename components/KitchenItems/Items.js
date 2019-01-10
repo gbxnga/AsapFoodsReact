@@ -1,6 +1,7 @@
-import KitchenBanner from './Banner'
-import Item from './Item'
-import ErrorPage from '../ErrorPage'
+import KitchenBanner from './Banner';
+import Item from './Item';
+import ErrorPage from '../ErrorPage';
+import constants from '../../constants/constants';
 
 const KitchenItems = ({kitchen, items, createPlate=f=>f, filter=f=>f, filterItem=f=>f, _searchUpdated=f=>f, _createPlate=f=>f, _incrementItem=f=>f, selectedItems, _filterItemsBy=f=>f, category, loading}) =>{
 let _searchTerm
@@ -45,7 +46,7 @@ return (
                 {
                     (items.length == 0) ? 
                     <div style={{width:"110%"}}>
-                    <img className="center-block" style={{marginTop:5}} width="120" height="120" src="../../../../src/icons/empty.png"/>
+                    <img className="center-block" style={{marginTop:5}} width="120" height="120" src={`${constants.site}/src/icons/empty.png`}/>
                     <h3 style={{textAlign:"center"}}>Sorry! No item in category</h3>  
                     </div>:
                         items.map(item => {

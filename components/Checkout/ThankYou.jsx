@@ -1,5 +1,6 @@
 import React from 'react';
 import {NavLink, Redirect} from 'react-router-dom';
+import constants from '../../constants/constants';
 
 
 const ThankYou = ({ order_number, total_amount, payment_method }) => (
@@ -7,7 +8,7 @@ const ThankYou = ({ order_number, total_amount, payment_method }) => (
   <div className="thank-you-page page-container" id=" " className="col-md-12" style={{marginTop:100, diplay:"block"}}>
 
     <div id="thank-you-page-banner ">
-      <img width="150" height="150" className="center-block " alt="Thank you" src="src/icons/thankyou.png" />
+      <img width="150" height="150" className="center-block " alt="Thank you" src={`${constants.site}/src/icons/thankyou.png`} />
       <h2 className="text-center ">Thank you!</h2>
       <p className="text-center ">Your order is confirmed and on the way</p>
     </div>

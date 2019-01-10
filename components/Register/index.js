@@ -57,7 +57,7 @@ class Register extends Component {
         formData.append("phone", phone);
         formData.append("name", name);
 
-        axios.post('https://api.asapfoods.com.ng/api/call-phone', formData)
+        axios.post('https://api.asapfoods.ng/api/call-phone', formData)
             .then(response => {
                 console.log(response)
                 return response
